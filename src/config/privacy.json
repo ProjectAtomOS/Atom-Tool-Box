@@ -1,0 +1,232 @@
+﻿[
+    {
+        "id":  "privacy_location",
+        "name":  "DISABLE LOCATION ACCESS",
+        "description":  "Prevents apps from accessing your device location.",
+        "script_on":  "privacy/location_off.bat",
+        "script_off":  "privacy/location_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\location\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\location\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_camera",
+        "name":  "DISABLE CAMERA ACCESS",
+        "description":  "Prevents apps from accessing your camera.",
+        "script_on":  "privacy/camera_off.bat",
+        "script_off":  "privacy/camera_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\webcam\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\webcam\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_microphone",
+        "name":  "DISABLE MICROPHONE ACCESS",
+        "description":  "Prevents apps from accessing your microphone.",
+        "script_on":  "privacy/microphone_off.bat",
+        "script_off":  "privacy/microphone_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\microphone\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\microphone\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_notifications",
+        "name":  "DISABLE NOTIFICATIONS ACCESS",
+        "description":  "Prevents apps from accessing your notifications.",
+        "script_on":  "privacy/notifications_off.bat",
+        "script_off":  "privacy/notifications_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\userNotificationListener\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\userNotificationListener\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_account_info",
+        "name":  "DISABLE ACCOUNT INFO ACCESS",
+        "description":  "Prevents apps from accessing your name, picture, and other account info.",
+        "script_on":  "privacy/account_info_off.bat",
+        "script_off":  "privacy/account_info_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\userAccountInformation\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\userAccountInformation\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_contacts",
+        "name":  "DISABLE CONTACTS ACCESS",
+        "description":  "Prevents apps from accessing your contacts.",
+        "script_on":  "privacy/contacts_off.bat",
+        "script_off":  "privacy/contacts_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\contacts\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\contacts\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_calendar",
+        "name":  "DISABLE CALENDAR ACCESS",
+        "description":  "Prevents apps from accessing your calendar.",
+        "script_on":  "privacy/calendar_off.bat",
+        "script_off":  "privacy/calendar_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\appointments\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\appointments\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_phone_calls",
+        "name":  "DISABLE PHONE CALLS ACCESS",
+        "description":  "Prevents apps from accessing your phone calling capability.",
+        "script_on":  "privacy/phone_calls_off.bat",
+        "script_off":  "privacy/phone_calls_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\phoneCall\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\phoneCall\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_call_history",
+        "name":  "DISABLE CALL HISTORY ACCESS",
+        "description":  "Prevents apps from accessing your call history.",
+        "script_on":  "privacy/call_history_off.bat",
+        "script_off":  "privacy/call_history_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\phoneCallHistory\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\phoneCallHistory\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_email",
+        "name":  "DISABLE EMAIL ACCESS",
+        "description":  "Prevents apps from accessing your email.",
+        "script_on":  "privacy/email_off.bat",
+        "script_off":  "privacy/email_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\email\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\email\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_tasks",
+        "name":  "DISABLE TASKS ACCESS",
+        "description":  "Prevents apps from accessing your tasks.",
+        "script_on":  "privacy/tasks_off.bat",
+        "script_off":  "privacy/tasks_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\userDataTasks\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\userDataTasks\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_messaging",
+        "name":  "DISABLE MESSAGING ACCESS",
+        "description":  "Prevents apps from accessing your messaging.",
+        "script_on":  "privacy/messaging_off.bat",
+        "script_off":  "privacy/messaging_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\chat\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\chat\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_radios",
+        "name":  "DISABLE RADIOS ACCESS",
+        "description":  "Prevents apps from accessing your radios (WiFi, Bluetooth, etc).",
+        "script_on":  "privacy/radios_off.bat",
+        "script_off":  "privacy/radios_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\radios\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\radios\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_bluetooth",
+        "name":  "DISABLE BLUETOOTH SYNC ACCESS",
+        "description":  "Prevents apps from syncing with Bluetooth devices.",
+        "script_on":  "privacy/bluetooth_off.bat",
+        "script_off":  "privacy/bluetooth_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\bluetoothSync\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\bluetoothSync\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_app_diagnostics",
+        "name":  "DISABLE APP DIAGNOSTICS ACCESS",
+        "description":  "Prevents apps from accessing diagnostic info about other apps.",
+        "script_on":  "privacy/app_diagnostics_off.bat",
+        "script_off":  "privacy/app_diagnostics_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\appDiagnostics\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\appDiagnostics\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_documents",
+        "name":  "DISABLE DOCUMENTS LIBRARY ACCESS",
+        "description":  "Prevents apps from accessing your documents library.",
+        "script_on":  "privacy/documents_off.bat",
+        "script_off":  "privacy/documents_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\documentsLibrary\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\documentsLibrary\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_pictures",
+        "name":  "DISABLE PICTURES LIBRARY ACCESS",
+        "description":  "Prevents apps from accessing your pictures library.",
+        "script_on":  "privacy/pictures_off.bat",
+        "script_off":  "privacy/pictures_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\picturesLibrary\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\picturesLibrary\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_videos",
+        "name":  "DISABLE VIDEOS LIBRARY ACCESS",
+        "description":  "Prevents apps from accessing your videos library.",
+        "script_on":  "privacy/videos_off.bat",
+        "script_off":  "privacy/videos_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\videosLibrary\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\videosLibrary\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_filesystem",
+        "name":  "DISABLE FILE SYSTEM ACCESS",
+        "description":  "Prevents apps from accessing the broad file system.",
+        "script_on":  "privacy/filesystem_off.bat",
+        "script_off":  "privacy/filesystem_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\broadFileSystemAccess\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\broadFileSystemAccess\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_eyetracker",
+        "name":  "DISABLE EYE TRACKER ACCESS",
+        "description":  "Prevents apps from accessing eye tracker data.",
+        "script_on":  "privacy/eyetracker_off.bat",
+        "script_off":  "privacy/eyetracker_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\eyeGazeInput\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\eyeGazeInput\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_activity",
+        "name":  "DISABLE ACTIVITY HISTORY ACCESS",
+        "description":  "Prevents apps from accessing your activity history.",
+        "script_on":  "privacy/activity_off.bat",
+        "script_off":  "privacy/activity_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\activity\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\activity\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_screenshots",
+        "name":  "DISABLE SCREENSHOT BORDER ACCESS",
+        "description":  "Prevents apps from capturing screenshots without border.",
+        "script_on":  "privacy/screenshots_off.bat",
+        "script_off":  "privacy/screenshots_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\graphicsCaptureWithoutBorder\" /v Value /t REG_SZ /d Deny /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\graphicsCaptureWithoutBorder\u0027 -Name \u0027Value\u0027 -ErrorAction Stop).Value; if ($v -eq \u0027Deny\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id":  "privacy_background_apps",
+        "name":  "DISABLE BACKGROUND APPS",
+        "description":  "Prevents apps from running in the background.",
+        "script_on":  "privacy/backgroundapps_off.bat",
+        "script_off":  "privacy/backgroundapps_on.bat",
+        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications\" /v GlobalUserDisabled /t REG_DWORD /d 1 /f",
+        "default_state":  false,
+        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications\u0027 -Name \u0027GlobalUserDisabled\u0027 -ErrorAction Stop).GlobalUserDisabled; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    }
+]

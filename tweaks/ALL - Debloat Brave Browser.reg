@@ -1,0 +1,21 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\BraveSoftware\Brave]
+"BraveRewardsDisabled"=dword:00000001
+"BraveWalletDisabled"=dword:00000001
+"BraveVPNDisabled"=dword:00000001
+"BraveAIChatEnabled"=dword:00000000
+"BraveStatsPingEnabled"=dword:00000000
+"MetricsReportingEnabled"=dword:00000000
+"SearchSuggestEnabled"=dword:00000000
+"AlternateErrorPagesEnabled"=dword:00000000
+"NetworkPredictionOptions"=dword:00000002
+"BackgroundModeEnabled"=dword:00000000
+"SyncDisabled"=dword:00000001
+"PasswordManagerEnabled"=dword:00000000
+"AutofillAddressEnabled"=dword:00000000
+"AutofillCreditCardEnabled"=dword:00000000
+"HomepageIsNewTabPage"=dword:00000001
+"RestoreOnStartup"=dword:00000005
+"SafeBrowsingEnabled"=dword:00000001
+"HttpsOnlyMode"=dword:00000001

@@ -1,0 +1,396 @@
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0a;
+  --panel: #0d0d0d;
+  --border: #1c1c1c;
+  --text: #ffffff;
+  --text-dim: #888888;
+  --text-muted: #555555;
+  --text-faint: #2a2a2a;
+  --hover-bg: #141414;
+  --toggle-bg: #181818;
+  font-family: 'Segoe UI', 'Consolas', 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg);
+}
+
+[data-theme="light"] {
+  --bg: #f0f0f0;
+  --panel: #ffffff;
+  --border: #d0d0d0;
+  --text: #1a1a1a;
+  --text-dim: #555555;
+  --text-muted: #888888;
+  --text-faint: #aaaaaa;
+  --hover-bg: #e8e8e8;
+  --toggle-bg: #e0e0e0;
+}
+
+body { overflow: hidden; height: 100vh; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+::-webkit-scrollbar-corner { background: var(--bg); }
+
+::selection { background: var(--text-dim); color: var(--bg); }
+
+#app { display: flex; flex-direction: column; height: 100vh; }
+
+#top-strip {
+  display: flex; justify-content: space-between; align-items: center;
+  height: 56px; padding: 0 20px;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  -webkit-app-region: drag; user-select: none;
+  font-size: 12px; letter-spacing: 0.5px;
+}
+#sys-info { display: flex; align-items: center; gap: 14px; }
+.brand {
+  color: var(--text); font-weight: 700; letter-spacing: 1.5px;
+  position: relative; padding-right: 16px; display: flex; align-items: center;
+}
+.brand-logo { height: 44px; width: auto; display: block; }
+.brand::after {
+  content: ''; position: absolute; right: 0; top: 4px; bottom: 4px;
+  width: 1px; background: var(--border);
+}
+.sep { color: var(--text-faint); }
+#sys-info span:not(.brand):not(.sep) {
+  color: var(--text-dim); transition: color 0.15s;
+}
+#window-controls { display: flex; gap: 1px; -webkit-app-region: no-drag; }
+.wc-btn {
+  background: none; border: none; color: var(--text-dim);
+  width: 38px; height: 30px; cursor: pointer;
+  font-family: 'Consolas', monospace; font-size: 12px;
+  transition: color 0.1s, background 0.1s;
+  display: flex; align-items: center; justify-content: center;
+}
+.wc-btn:hover { color: var(--text); background: var(--panel); }
+.wc-close:hover { color: #fff; background: #990000; }
+
+#layout { display: flex; flex: 1; overflow: hidden; }
+
+#sidebar {
+  width: 210px; min-width: 210px;
+  background: var(--bg); border-right: 1px solid var(--border);
+  padding: 4px 0; overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.nav-group { margin-bottom: 4px; }
+.nav-group + .nav-group { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+.nav-group-title {
+  padding: 10px 16px 6px; font-size: 10px; color: var(--text-dim);
+  letter-spacing: 2px; user-select: none; font-weight: 600;
+}
+.nav-item {
+  display: block; width: 100%; text-align: left;
+  background: none; border: none; border-left: 2px solid transparent;
+  color: var(--text-dim); padding: 8px 16px;
+  font-family: inherit; font-size: 11px; letter-spacing: 0.8px;
+  cursor: pointer; transition: all 0.12s;
+  position: relative;
+}
+.nav-item:hover {
+  color: var(--text); background: linear-gradient(90deg, var(--panel) 0%, transparent 100%);
+  border-left-color: var(--text-dim);
+}
+.nav-item.active {
+  color: var(--text); border-left-color: var(--text);
+  background: linear-gradient(90deg, var(--panel) 0%, transparent 100%);
+}
+.nav-item.active::before {
+  content: ''; position: absolute; top: 0; bottom: 0; left: -1px;
+  width: 1px; background: var(--text);
+}
+
+#content-area {
+  flex: 1; padding: 24px; overflow-y: auto;
+  background-color: var(--bg);
+}
+
+#bottom-strip {
+  display: flex; gap: 28px; align-items: center;
+  height: 26px; padding: 0 16px;
+  background: var(--bg); border-top: 1px solid var(--border);
+  font-size: 10px; color: var(--text-dim); letter-spacing: 0.8px;
+}
+#bottom-strip span { display: flex; align-items: center; gap: 4px; }
+#bottom-strip span span { color: var(--text-muted); }
+
+.section-title {
+  font-size: 14px; color: var(--text); letter-spacing: 1.5px;
+  margin-bottom: 20px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+
+/* Dashboard */
+.metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+.metric-card {
+  border: 1px solid var(--border); padding: 18px 20px;
+  background: var(--panel);
+  position: relative;
+}
+.metric-card::before {
+  content: ''; position: absolute; top: -1px; left: -1px; right: -1px;
+  height: 2px; background: var(--text-faint);
+}
+.metric-card:first-child::before { background: var(--text); }
+.metric-card:nth-child(2)::before { background: var(--text-dim); }
+.metric-card:nth-child(3)::before { background: var(--text-muted); }
+.metric-label { font-size: 9px; color: var(--text-dim); letter-spacing: 1.5px; margin-bottom: 8px; }
+.metric-value {
+  font-size: 30px; color: var(--text); font-family: 'Consolas', monospace;
+  font-weight: 200; letter-spacing: -1px;
+}
+.metric-sub { font-size: 10px; color: var(--text-dim); margin-top: 6px; letter-spacing: 0.3px; }
+.metric-bar { height: 2px; background: var(--border); margin-top: 12px; }
+.metric-bar-fill { height: 100%; background: var(--text); transition: width 0.6s ease; }
+
+.os-info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.os-card {
+  border: 1px solid var(--border); padding: 14px;
+  background: var(--panel);
+  transition: border-color 0.15s;
+}
+.os-card:hover { border-color: var(--text-dim); }
+.os-label {
+  font-size: 9px; color: var(--text-dim); letter-spacing: 1.5px;
+  margin-bottom: 6px; text-transform: uppercase;
+}
+.os-value { font-size: 12px; color: var(--text); font-family: 'Consolas', monospace; letter-spacing: 0.3px; }
+
+/* Tweaks */
+.tweak-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 16px; border: 1px solid var(--border);
+  margin-bottom: 6px; background: var(--panel);
+  transition: border-color 0.12s, background 0.12s;
+}
+.tweak-row:hover { border-color: var(--text-dim); background: var(--hover-bg); }
+.tweak-info { flex: 1; min-width: 0; }
+.tweak-name { font-size: 12px; color: var(--text); letter-spacing: 0.5px; }
+.tweak-desc { font-size: 10px; color: var(--text-dim); margin-top: 4px; line-height: 1.4; }
+
+.tweak-toggle {
+  width: 40px; height: 22px; border: 1px solid var(--border);
+  background: var(--bg); cursor: pointer; position: relative;
+  flex-shrink: 0; transition: background 0.15s, border-color 0.15s;
+  margin-left: 16px;
+}
+.tweak-toggle:hover { border-color: var(--text-dim); }
+.tweak-toggle.active { background: var(--toggle-bg); border-color: var(--text-dim); }
+.tweak-toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px; background: var(--text-dim);
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.tweak-toggle:hover::after { background: var(--text); }
+.tweak-toggle.active::after { left: 20px; background: var(--text); }
+
+.script-preview {
+  margin-top: 24px; border: 1px solid var(--border);
+  background: var(--panel);
+}
+.script-header {
+  padding: 10px 14px; font-size: 10px; color: var(--text-dim);
+  letter-spacing: 1.5px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 6px;
+}
+.script-header::before {
+  content: '>'; color: var(--text-muted); font-family: 'Consolas', monospace;
+}
+.script-content {
+  padding: 14px; font-family: 'Consolas', monospace;
+  font-size: 11px; color: var(--text-dim); line-height: 1.7;
+  min-height: 90px; max-height: 220px; overflow-y: auto;
+  white-space: pre-wrap; tab-size: 2;
+}
+
+/* App Installer */
+.app-category { margin-bottom: 24px; }
+.app-category-title {
+  font-size: 11px; color: var(--text-dim); letter-spacing: 1.5px;
+  padding-bottom: 8px; margin-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.app-category-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+.app-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 12px; border: 1px solid var(--border);
+  margin-bottom: 3px; background: var(--panel);
+  transition: border-color 0.12s, background 0.12s;
+}
+.app-row:hover { border-color: var(--text-dim); background: var(--hover-bg); }
+.app-name { font-size: 12px; color: var(--text); letter-spacing: 0.3px; }
+.app-install-btn {
+  background: none; border: 1px solid var(--border);
+  color: var(--text-dim); padding: 5px 14px;
+  font-family: inherit; font-size: 10px; letter-spacing: 0.8px;
+  cursor: pointer; transition: all 0.1s;
+  min-width: 80px; text-align: center;
+}
+.app-install-btn:hover { color: var(--text); background: var(--border); }
+.app-install-btn.installing { color: var(--text-muted); pointer-events: none; opacity: 0.5; }
+
+.tweak-count { font-size: 10px; color: var(--text-muted); font-weight: 400; letter-spacing: 0.5px; }
+
+#install-progress-bar { margin-bottom: 20px; border: 1px solid var(--border); padding: 14px; background: var(--panel); }
+.progress-bar { height: 3px; background: var(--border); margin-bottom: 8px; }
+.progress-fill { height: 100%; background: var(--text); width: 0%; transition: width 0.4s ease; }
+.progress-text { font-size: 10px; color: var(--text-dim); letter-spacing: 0.5px; font-family: 'Consolas', monospace; }
+
+/* Settings */
+.settings-grid { display: flex; flex-direction: column; gap: 16px; }
+.settings-card { border: 1px solid var(--border); background: var(--panel); }
+.settings-card-title {
+  padding: 10px 16px; font-size: 10px; color: var(--text-faint);
+  letter-spacing: 2px; border-bottom: 1px solid var(--border); font-weight: 600;
+}
+.settings-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-row:hover { background: var(--hover-bg); }
+.settings-row-info { flex: 1; min-width: 0; }
+.settings-row-name { font-size: 12px; color: var(--text); letter-spacing: 0.5px; }
+.settings-row-desc { font-size: 10px; color: var(--text-dim); margin-top: 3px; }
+.settings-btn {
+  background: none; border: 1px solid var(--border);
+  color: var(--text-dim); padding: 5px 16px; flex-shrink: 0;
+  font-family: inherit; font-size: 10px; letter-spacing: 0.8px;
+  cursor: pointer; transition: all 0.1s; margin-left: 16px; min-width: 70px; text-align: center;
+}
+.settings-btn:hover { color: var(--text); background: var(--border); }
+.settings-tag {
+  border: 1px solid var(--border); padding: 3px 10px;
+  font-size: 11px; color: var(--text); font-family: 'Consolas', monospace;
+  letter-spacing: 0.5px; margin-left: 16px;
+}
+
+/* Installed Apps */
+.applist-status { font-size: 11px; color: var(--text-dim); letter-spacing: 0.5px; padding: 20px 0; }
+.applist-tabs { display: flex; gap: 0; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
+.applist-tab {
+  background: none; border: none; border-bottom: 2px solid transparent;
+  color: var(--text-dim); padding: 8px 16px; font-family: inherit;
+  font-size: 11px; letter-spacing: 0.8px; cursor: pointer; transition: all 0.1s;
+}
+.applist-tab:hover { color: var(--text); }
+.applist-tab.active { color: var(--text); border-bottom-color: var(--text); }
+.applist-search { margin-bottom: 10px; }
+.applist-input {
+  width: 100%; background: var(--panel); border: 1px solid var(--border);
+  color: var(--text-dim); padding: 8px 12px; font-family: inherit;
+  font-size: 11px; letter-spacing: 0.5px; outline: none;
+}
+.applist-input:focus { border-color: var(--text-dim); color: var(--text); }
+.applist-count { font-size: 10px; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.5px; }
+.applist-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; border: 1px solid var(--border);
+  margin-bottom: 3px; background: var(--panel);
+  transition: border-color 0.12s, background 0.12s;
+}
+.applist-row:hover { border-color: var(--text-dim); background: var(--hover-bg); }
+.applist-info { flex: 1; min-width: 0; }
+.applist-name { font-size: 12px; color: var(--text); letter-spacing: 0.3px; }
+.applist-meta { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+.applist-del-btn {
+  background: none; border: 1px solid var(--border);
+  color: var(--text-dim); padding: 4px 12px; flex-shrink: 0;
+  font-family: inherit; font-size: 10px; letter-spacing: 0.5px;
+  cursor: pointer; transition: all 0.1s; margin-left: 12px; min-width: 80px; text-align: center;
+}
+.applist-del-btn:hover { color: var(--text); background: var(--border); }
+.applist-del-btn.installing { color: var(--text-muted); pointer-events: none; opacity: 0.5; }
+
+.admin-warn {
+  border: 1px solid #554400; background: #1a1600;
+  color: #aa8800; padding: 8px 14px; margin-bottom: 12px;
+  font-size: 10px; letter-spacing: 0.5px; font-family: 'Consolas', monospace;
+}
+[data-theme="light"] .admin-warn {
+  border-color: #ccaa00;
+  background: #fff8e0;
+  color: #886600;
+}
+
+.tweak-status {
+  font-family: 'Consolas', monospace; font-size: 9px; letter-spacing: 0.5px;
+  margin-left: 8px; min-width: 36px; text-align: right;
+  transition: color 0.2s;
+}
+.tweak-status.ok { color: #33aa33; }
+.tweak-status.fail { color: #cc3333; }
+.tweak-status.running { color: #aaaa33; }
+
+[data-theme="light"] .tweak-status.ok { color: #228822; }
+[data-theme="light"] .tweak-status.fail { color: #bb2222; }
+[data-theme="light"] .tweak-status.running { color: #888800; }
+
+.tweak-toggle.executing { opacity: 0.6; pointer-events: none; }
+
+.tweak-console {
+  margin-top: 16px; border: 1px solid var(--border);
+  background: var(--panel);
+}
+.tweak-console-header {
+  padding: 8px 12px; font-size: 10px; color: var(--text-dim);
+  letter-spacing: 1px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: 'Consolas', monospace;
+}
+.tweak-console-content {
+  padding: 10px 12px; font-family: 'Consolas', monospace;
+  font-size: 10px; color: var(--text-dim); line-height: 1.6;
+  min-height: 80px; max-height: 200px; overflow-y: auto;
+  white-space: pre-wrap; tab-size: 2;
+}
+.console-clear {
+  background: none; border: 1px solid var(--border);
+  color: var(--text-dim); padding: 2px 10px;
+  font-family: inherit; font-size: 9px; letter-spacing: 0.5px;
+  cursor: pointer; transition: all 0.1s;
+}
+.console-clear:hover { color: var(--text); background: var(--border); }
+
+/* Shortcuts */
+.shortcut-btn {
+  padding: 10px 8px;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  min-height: 42px;
+  word-break: break-word;
+  white-space: normal;
+  line-height: 1.3;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.shortcut-btn:hover {
+  color: var(--text);
+  background: var(--hover-bg);
+  border-color: var(--text-dim);
+}
+
+/* History & Cleaner */
+.history-revert-btn, .cleaner-btn {
+  min-width: 70px;
+  text-align: center;
+}
+.history-revert-btn.executing, .cleaner-btn.executing {
+  opacity: 0.6;
+  cursor: wait;
+}

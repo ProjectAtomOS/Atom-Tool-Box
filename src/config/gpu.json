@@ -1,0 +1,332 @@
+[
+  {
+    "id": "gpu_perf_mode",
+    "name": "GPU PERFORMANCE MODE",
+    "description": "Sets GPU scheduling policy to favor raw rendering throughput over power savings.",
+    "script_on": "gpu/perf_on.bat",
+    "script_off": "gpu/perf_off.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v HwSchMode /t REG_DWORD /d 2 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'HwSchMode' -ErrorAction Stop).HwSchMode; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_fxaa",
+    "name": "DISABLE POST-PROCESS FX",
+    "description": "Disables driver-level post-processing effects and forced anti-aliasing overrides.",
+    "script_on": "gpu/fxaa_off.bat",
+    "script_off": "gpu/fxaa_on.bat",
+    "command": "reg add \"HKCU\\Software\\NVIDIA Corporation\\Global\\NGXCore\\FeatureControl\" /v FxaaEnabled /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\NVIDIA Corporation\\Global\\NGXCore\\FeatureControl' -Name 'FxaaEnabled' -ErrorAction Stop).FxaaEnabled; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_gpu_power_save",
+    "name": "DISABLE GPU POWER SAVING",
+    "description": "Prevents the GPU from entering low-power idle states when not actively rendering.",
+    "script_on": "gpu/gpupowersave_off.bat",
+    "script_off": "gpu/gpupowersave_on.bat",
+    "command": "powercfg -setacvalueindex SCHEME_CURRENT SUB_GRAPHICS GPUPREFERENCEPOLICY 1",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"$r = powercfg /query SCHEME_CURRENT SUB_GRAPHICS GPUPREFERENCEPOLICY 2>&1; if ($r -match '0x1') { exit 0 } else { exit 1 }\""
+  },
+  {
+    "id": "disable_vsync",
+    "name": "DISABLE VSYNC",
+    "description": "Disables vertical synchronization to uncap frame rates in applications.",
+    "script_on": "gpu/vsync_off.bat",
+    "script_off": "gpu/vsync_on.bat",
+    "command": "reg add \"HKCU\\Software\\NVIDIA Corporation\\Global\\NVTweak\" /v NvCplUsePerfOptimization /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\NVIDIA Corporation\\Global\\NVTweak' -Name 'NvCplUsePerfOptimization' -ErrorAction Stop).NvCplUsePerfOptimization; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "gpu_priority",
+    "name": "GPU PRIORITY MODE",
+    "description": "Raises GPU process scheduling priority class for reduced input-to-display latency.",
+    "script_on": "gpu/gpupriority_off.bat",
+    "script_off": "gpu/gpupriority_on.bat",
+    "command": "reg add \"HKLM\\Software\\Microsoft\\DirectX\\GraphicsSettings\" /v GPUPreferences /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\DirectX\\GraphicsSettings' -Name 'GPUPreferences' -ErrorAction Stop).GPUPreferences; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_gpu_timeout",
+    "name": "DISABLE GPU TIMEOUT",
+    "description": "Increases GPU timeout detection and recovery delay to prevent driver resets.",
+    "script_on": "gpu/gputimeout_off.bat",
+    "script_off": "gpu/gputimeout_on.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v TdrDelay /t REG_DWORD /d 8 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'TdrDelay' -ErrorAction Stop).TdrDelay; if ($v -eq 8) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "force_multi_gpu",
+    "name": "FORCE MULTI-GPU MODE",
+    "description": "Enables explicit multi-GPU adapter rendering for compatible applications.",
+    "script_on": "gpu/multigpu_off.bat",
+    "script_off": "gpu/multigpu_on.bat",
+    "command": "reg add \"HKLM\\Software\\Microsoft\\DirectX\\GraphicsSettings\" /v MultiGpuSupport /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\DirectX\\GraphicsSettings' -Name 'MultiGpuSupport' -ErrorAction Stop).MultiGpuSupport; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "enable_gpu_accel",
+    "name": "ENABLE GPU ACCELERATION",
+    "description": "Forces GPU acceleration for all composited window rendering operations.",
+    "script_on": "gpu/gpuaccel_off.bat",
+    "script_off": "gpu/gpuaccel_on.bat",
+    "command": "reg add \"HKCU\\Software\\Microsoft\\Avalon.Graphics\" /v DisableHWAcceleration /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Avalon.Graphics' -Name 'DisableHWAcceleration' -ErrorAction Stop).DisableHWAcceleration; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_wddm_opt",
+    "name": "DISABLE WDDM OPTIMIZATION",
+    "description": "Disables WDDM driver optimizations that may introduce rendering overhead.",
+    "script_on": "gpu/wddm_off.bat",
+    "script_off": "gpu/wddm_on.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v PlatformOptimization /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'PlatformOptimization' -ErrorAction Stop).PlatformOptimization; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "gpu_tdr_delay",
+    "name": "GPU TDR DELAY EXTEND",
+    "description": "Extends the timeout detection and recovery delay for GPU driver hangs.",
+    "script_on": "gpu/tdrdelay_off.bat",
+    "script_off": "gpu/tdrdelay_on.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v TdrDdiDelay /t REG_DWORD /d 8 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'TdrDdiDelay' -ErrorAction Stop).TdrDdiDelay; if ($v -eq 8) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_gpu_mem_throttle",
+    "name": "DISABLE GPU MEMORY THROTTLING",
+    "description": "Prevents the GPU memory controller from throttling bandwidth under load.",
+    "script_on": "gpu/memthrottle_off.bat",
+    "script_off": "gpu/memthrottle_on.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v MemoryThrottling /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'MemoryThrottling' -ErrorAction Stop).MemoryThrottling; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "enable_shader_cache",
+    "name": "ENABLE SHADER CACHE",
+    "description": "Enables persistent GPU shader cache for improved performance in repeated workloads.",
+    "script_on": "gpu/shader_off.bat",
+    "script_off": "gpu/shader_on.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v ShaderCache /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'ShaderCache' -ErrorAction Stop).ShaderCache; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "gpu_optimize_compute",
+    "name": "GPU COMPUTE OPTIMIZATION",
+    "description": "Optimizes GPU scheduling for compute workloads over graphics rendering.",
+    "script_on": "gpu/compute_off.bat",
+    "script_off": "gpu/compute_on.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v ComputeOptimization /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'ComputeOptimization' -ErrorAction Stop).ComputeOptimization; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_gpu_flicker",
+    "name": "DISABLE GPU Flicker Mitigation",
+    "description": "Turns off display flicker mitigation that can add rendering latency.",
+    "script_on": "gpu/flicker_off.bat",
+    "script_off": "gpu/flicker_on.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v FlickerMitigation /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'FlickerMitigation' -ErrorAction Stop).FlickerMitigation; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "gpu_max_fps",
+    "name": "GPU MAXIMUM FRAME RATE",
+    "description": "Sets a driver-level maximum frame rate cap for consistent rendering.",
+    "script_on": "gpu/maxfps_off.bat",
+    "script_off": "gpu/maxfps_on.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v GlobalFPSLimit /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'GlobalFPSLimit' -ErrorAction Stop).GlobalFPSLimit; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_storage_sense",
+    "name": "DISABLE STORAGE SENSE",
+    "description": "Turns off automatic Storage Sense cleanup that deletes files without user consent.",
+    "script_on": "explorer/storagesense_off.bat",
+    "script_off": "explorer/storagesense_on.bat",
+    "command": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\StorageSense\" /v AllowStorageSenseGlobal /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Policies\\Microsoft\\Windows\\StorageSense' -Name 'AllowStorageSenseGlobal' -ErrorAction Stop).AllowStorageSenseGlobal; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_tray_notifications",
+    "name": "DISABLE SYSTEM TRAY NOTIFICATIONS",
+    "description": "Disables the notification center and calendar flyout in the system tray.",
+    "script_on": "explorer/traynotif_off.bat",
+    "script_off": "explorer/traynotif_on.bat",
+    "command": "reg add \"HKCU\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v DisableNotificationCenter /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer' -Name 'DisableNotificationCenter' -ErrorAction Stop).DisableNotificationCenter; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "enable_bsod_verbose",
+    "name": "ENABLE BSOD VERBOSE MODE",
+    "description": "Shows detailed error information on Blue Screen of Death instead of a sad face.",
+    "script_on": "explorer/bsodverbose_on.bat",
+    "script_off": "explorer/bsodverbose_off.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\CrashControl\" /v DisplayParameters /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\CrashControl' -Name 'DisplayParameters' -ErrorAction Stop).DisplayParameters; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "enable_cross_device",
+    "name": "ENABLE CROSS-DEVICE RESUME",
+    "description": "Enables clipboard history and cross-device resume functionality.",
+    "script_on": "explorer/crossdevice_on.bat",
+    "script_off": "explorer/crossdevice_off.bat",
+    "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Clipboard\" /v EnableClipboardHistory /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Clipboard' -Name 'EnableClipboardHistory' -ErrorAction Stop).EnableClipboardHistory; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_logon_blur",
+    "name": "DISABLE LOGON ACRYLIC BLUR",
+    "description": "Removes the acrylic blur effect from the lock screen background.",
+    "script_on": "explorer/logonblur_off.bat",
+    "script_off": "explorer/logonblur_on.bat",
+    "command": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v DisableAcrylicBackgroundOnLogon /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Policies\\Microsoft\\Windows\\System' -Name 'DisableAcrylicBackgroundOnLogon' -ErrorAction Stop).DisableAcrylicBackgroundOnLogon; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "enable_logon_verbose",
+    "name": "ENABLE LOGON VERBOSE MODE",
+    "description": "Shows detailed startup/shutdown messages during Windows boot and logon.",
+    "script_on": "explorer/logonverbose_on.bat",
+    "script_off": "explorer/logonverbose_off.bat",
+    "command": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v VerboseStatus /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System' -Name 'VerboseStatus' -ErrorAction Stop).VerboseStatus; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_outlook_new",
+    "name": "DISABLE NEW OUTLOOK",
+    "description": "Prevents the new Outlook app from replacing the classic Outlook client.",
+    "script_on": "explorer/outlooknew_off.bat",
+    "script_off": "explorer/outlooknew_on.bat",
+    "command": "reg add \"HKCU\\Software\\Microsoft\\Office\\16.0\\Outlook\\Options\\General\" /v HideNewOutlookToggle /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Office\\16.0\\Outlook\\Options\\General' -Name 'HideNewOutlookToggle' -ErrorAction Stop).HideNewOutlookToggle; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_mouse_accel",
+    "name": "DISABLE MOUSE ACCELERATION",
+    "description": "Turns off Windows mouse acceleration for consistent 1:1 cursor movement.",
+    "script_on": "explorer/mouseaccel_off.bat",
+    "script_off": "explorer/mouseaccel_on.bat",
+    "command": "reg add \"HKCU\\Control Panel\\Mouse\" /v MouseSpeed /t REG_SZ /d 0 /f && reg add \"HKCU\\Control Panel\\Mouse\" /v MouseThreshold1 /t REG_SZ /d 0 /f && reg add \"HKCU\\Control Panel\\Mouse\" /v MouseThreshold2 /t REG_SZ /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Mouse' -Name 'MouseSpeed' -ErrorAction Stop).MouseSpeed; if ($v -eq '0') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_multiplane_overlay",
+    "name": "DISABLE MULTIPLANE OVERLAY",
+    "description": "Disables MPO to fix fullscreen stuttering and flickering issues in games.",
+    "script_on": "explorer/mpo_off.bat",
+    "script_off": "explorer/mpo_on.bat",
+    "command": "reg add \"HKLM\\Software\\Microsoft\\Windows\\Dwm\" /v OverlayTestMode /t REG_DWORD /d 5 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\Dwm' -Name 'OverlayTestMode' -ErrorAction Stop).OverlayTestMode; if ($v -eq 5) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_s0_network",
+    "name": "DISABLE S0 SLEEP NETWORK",
+    "description": "Disables network connectivity during modern standby (S0) to save battery.",
+    "script_on": "explorer/s0network_off.bat",
+    "script_off": "explorer/s0network_on.bat",
+    "command": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9\" /v DCSettingIndex /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9' -Name 'DCSettingIndex' -ErrorAction Stop).DCSettingIndex; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "enable_s3_sleep",
+    "name": "ENABLE S3 SLEEP (DISABLE S0)",
+    "description": "Forces classic S3 sleep instead of modern standby (S0) for better power savings.",
+    "script_on": "explorer/s3sleep_on.bat",
+    "script_off": "explorer/s3sleep_off.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Power\" /v PlatformAoAcOverride /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Power' -Name 'PlatformAoAcOverride' -ErrorAction Stop).PlatformAoAcOverride; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_settings_home",
+    "name": "DISABLE SETTINGS HOME PAGE",
+    "description": "Removes the promotional Home page from the Windows Settings app.",
+    "script_on": "explorer/settingshome_off.bat",
+    "script_off": "explorer/settingshome_on.bat",
+    "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Settings\\Homepage\" /v HideHomepage /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Settings\\Homepage' -Name 'HideHomepage' -ErrorAction Stop).HideHomepage; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_fullscreen_opt",
+    "name": "DISABLE FULLSCREEN OPTIMIZATIONS",
+    "description": "Disables Windows fullscreen optimizations for better game compatibility and performance.",
+    "script_on": "explorer/fullscreenopt_off.bat",
+    "script_off": "explorer/fullscreenopt_on.bat",
+    "command": "reg add \"HKCU\\System\\GameConfigStore\" /v GameDVR_FSEBehaviorMode /t REG_DWORD /d 2 /f && reg add \"HKCU\\System\\GameConfigStore\" /v GameDVR_HonorUserFSEBehaviorMode /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\System\\GameConfigStore' -Name 'GameDVR_FSEBehaviorMode' -ErrorAction Stop).GameDVR_FSEBehaviorMode; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "set_utc_time",
+    "name": "SET TIME TO UTC",
+    "description": "Sets Windows to use UTC time for the Real-Time Clock (RTC) instead of local time.",
+    "script_on": "explorer/utc_on.bat",
+    "script_off": "explorer/utc_off.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\TimeZoneInformation\" /v RealTimeIsUniversal /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\TimeZoneInformation' -Name 'RealTimeIsUniversal' -ErrorAction Stop).RealTimeIsUniversal; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_rdp_warnings",
+    "name": "DISABLE RDP UNSIGNED FILE WARNINGS",
+    "description": "Suppresses unsigned file warnings when opening files via Remote Desktop.",
+    "script_on": "explorer/rdpwarn_off.bat",
+    "script_off": "explorer/rdpwarn_on.bat",
+    "command": "reg add \"HKCU\\Software\\Microsoft\\Terminal Server Client\" /v ShowRedirectionWarningDialog /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Terminal Server Client' -Name 'ShowRedirectionWarningDialog' -ErrorAction Stop).ShowRedirectionWarningDialog; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_defender",
+    "name": "DISABLE WINDOWS DEFENDER",
+    "description": "Turns off real-time antimalware monitoring and scheduled system scans.",
+    "script_on": "windows/defender_off.bat",
+    "script_off": "windows/defender_on.bat",
+    "command": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\" /v DisableAntiSpyware /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Policies\\Microsoft\\Windows Defender' -Name 'DisableAntiSpyware' -ErrorAction Stop).'DisableAntiSpyware'; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_firewall",
+    "name": "DISABLE WINDOWS FIREWALL",
+    "description": "Disables Windows Defender Firewall for all network profiles.",
+    "script_on": "windows/firewall_off.bat",
+    "script_off": "windows/firewall_on.bat",
+    "command": "netsh advfirewall set allprofiles state off",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"$r = netsh advfirewall show allprofiles 2>&1 | Out-String; if ($r -match 'States+ON') { exit 1 } else { exit 0 }\""
+  },
+  {
+    "id": "disable_remote_assist",
+    "name": "DISABLE REMOTE ASSISTANCE",
+    "description": "Disables Remote Desktop and Remote Assistance incoming connections.",
+    "script_on": "windows/remote_off.bat",
+    "script_off": "windows/remote_on.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Terminal Server\" /v fDenyTSConnections /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name 'fDenyTSConnections' -ErrorAction Stop).'fDenyTSConnections'; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  }
+]

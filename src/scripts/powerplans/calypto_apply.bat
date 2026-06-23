@@ -1,0 +1,1 @@
+powershell -NoProfile -Command "$g = (powercfg /import '%CD%\power-plans\calypto.pow' 2>&1 | Select-String '([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})').Matches[0].Value; if ($g) { powercfg /setactive $g; Write-Host ('Activated: ' + $g) } else { Write-Host 'Import failed'; exit 1 }"

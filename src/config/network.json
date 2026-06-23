@@ -1,0 +1,132 @@
+[
+  {
+    "id": "disable_teredo",
+    "name": "DISABLE TEREDO",
+    "description": "Disables the Teredo IPv6 tunneling protocol.",
+    "script_on": "network/teredo_disable.bat",
+    "script_off": "network/teredo_enable.bat",
+    "command": "netsh interface teredo set state disabled",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $r = netsh interface teredo show state 2>&1; if ($r -match 'disabled') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_ipv6",
+    "name": "DISABLE IPV6",
+    "description": "Completely disables IPv6 stack on all network interfaces.",
+    "script_on": "network/ipv6_disable.bat",
+    "script_off": "network/ipv6_enable.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\Tcpip6\\Parameters\" /v DisabledComponents /t REG_DWORD /d 0xff /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Services\\Tcpip6\\Parameters' -Name 'DisabledComponents' -ErrorAction Stop).DisabledComponents; if ($v -eq 255) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "prefer_ipv4",
+    "name": "PREFER IPV4 OVER IPV6",
+    "description": "Configures the system to prefer IPv4 over IPv6 when both are available.",
+    "script_on": "network/ipv4_prefer_on.bat",
+    "script_off": "network/ipv4_prefer_off.bat",
+    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\Tcpip6\\Parameters\" /v DisabledComponents /t REG_DWORD /d 0x20 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Services\\Tcpip6\\Parameters' -Name 'DisabledComponents' -ErrorAction Stop).DisabledComponents; if ($v -eq 32) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_nagle",
+    "name": "DISABLE NAGLES ALGORITHM",
+    "description": "Disables Nagle's algorithm for lower TCP latency.",
+    "script_on": "network/nagle_off.bat",
+    "script_off": "network/nagle_on.bat",
+    "command": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces\" /v TcpAckFrequency /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces' -Name 'TcpAckFrequency' -ErrorAction Stop).TcpAckFrequency; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "enable_tcp_nodelay",
+    "name": "ENABLE TCP NODELAY",
+    "description": "Enables TCP_NODELAY to send packets immediately without delay.",
+    "script_on": "network/tcp_nodelay_off.bat",
+    "script_off": "network/tcp_nodelay_on.bat",
+    "command": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\" /v TcpNoDelay /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters' -Name 'TcpNoDelay' -ErrorAction Stop).TcpNoDelay; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_rss",
+    "name": "DISABLE RSS",
+    "description": "Disables Receive Side Scaling for single-core network processing.",
+    "script_on": "network/rss_off.bat",
+    "script_off": "network/rss_on.bat",
+    "command": "netsh int tcp set global rss=disabled",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $r = netsh int tcp show global 2>&1; if ($r -match 'RSS\\s+:\\s+disabled') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_rsc",
+    "name": "DISABLE RSC",
+    "description": "Disables Receive Segment Coalescing to reduce network latency.",
+    "script_on": "network/rsc_off.bat",
+    "script_off": "network/rsc_on.bat",
+    "command": "netsh int tcp set global rsc=disabled",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $r = netsh int tcp show global 2>&1; if ($r -match 'RSC\\s+:\\s+disabled') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_autotuninglevel",
+    "name": "DISABLE AUTOTUNINGLEVEL",
+    "description": "Disables TCP autotuning for consistent network buffer sizes.",
+    "script_on": "network/autotuninglevel_off.bat",
+    "script_off": "network/autotuninglevel_on.bat",
+    "command": "netsh int tcp set global autotuninglevel=disabled",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $r = netsh int tcp show global 2>&1; if ($r -match 'Auto-Tuning Level\\s+:\\s+disabled') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_qos",
+    "name": "DISABLE QOS PACKET SCHEDULER",
+    "description": "Removes the QoS bandwidth limit to allow full network throughput.",
+    "script_on": "network/qos_off.bat",
+    "script_off": "network/qos_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Psched\" /v NonBestEffortLimit /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Psched' -Name 'NonBestEffortLimit' -ErrorAction Stop).NonBestEffortLimit; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "use_cloudflare_dns",
+    "name": "USE CLOUDFLARE DNS",
+    "description": "Sets all network adapters to use Cloudflare DNS (1.1.1.1).",
+    "script_on": "network/dns_cloudflare.bat",
+    "script_off": "network/dns_default.bat",
+    "command": "powershell -NoProfile -Command \"$adapters = Get-NetAdapter -Physical -ErrorAction SilentlyContinue; foreach ($a in $adapters) { Set-DnsClientServerAddress -InterfaceIndex $a.InterfaceIndex -ServerAddresses ('1.1.1.1','1.0.0.1') -ErrorAction SilentlyContinue }\"",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $a = Get-NetAdapter -Physical -ErrorAction Stop | Select-Object -First 1; $d = Get-DnsClientServerAddress -InterfaceIndex $a.InterfaceIndex -AddressFamily IPv4 -ErrorAction Stop; if ($d.ServerAddresses -contains '1.1.1.1') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_ecn",
+    "name": "DISABLE ECN",
+    "description": "Disables Explicit Congestion Notification for lower network latency.",
+    "script_on": "network/ecn_off.bat",
+    "script_off": "network/ecn_on.bat",
+    "command": "netsh int tcp set global ecncapability=disabled",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $r = netsh int tcp show global 2>&1; if ($r -match 'ECN Capability\\s+:\\s+disabled') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_timestamps",
+    "name": "DISABLE TCP TIMESTAMPS",
+    "description": "Disables TCP timestamps for reduced packet overhead.",
+    "script_on": "network/timestamps_off.bat",
+    "script_off": "network/timestamps_on.bat",
+    "command": "netsh int tcp set global timestamps=disabled",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $r = netsh int tcp show global 2>&1; if ($r -match 'Timestamps\\s+:\\s+disabled') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_heuristics",
+    "name": "DISABLE TCP HEURISTICS",
+    "description": "Disables TCP heuristics for consistent network behavior.",
+    "script_on": "network/heuristics_off.bat",
+    "script_off": "network/heuristics_on.bat",
+    "command": "netsh int tcp set global heuristics=disabled",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $r = netsh int tcp show global 2>&1; if ($r -match 'Heuristics\\s+:\\s+disabled') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  }
+]

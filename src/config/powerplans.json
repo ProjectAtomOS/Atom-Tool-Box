@@ -1,0 +1,22 @@
+[
+  {"id": "adamx", "name": "ADAMX POWER PLAN", "description": "High-performance gaming power plan optimized for low latency and maximum CPU throughput.", "script": "powerplans/adamx_apply.bat"},
+  {"id": "ancel", "name": "ANCEL POWER PLAN", "description": "Balanced power efficiency plan for everyday computing with moderate performance.", "script": "powerplans/ancel_apply.bat"},
+  {"id": "atlas", "name": "ATLAS POWER PLAN", "description": "Aggressive performance tuning for competitive gaming and esports workloads.", "script": "powerplans/atlas_apply.bat"},
+  {"id": "bitsum", "name": "BITSUM POWER PLAN", "description": "Process Lasso inspired power plan with dynamic process priority adjustments.", "script": "powerplans/bitsum_apply.bat"},
+  {"id": "calypto", "name": "CALYPTO POWER PLAN", "description": "Ultra-low latency power plan designed for fast-paced FPS and rhythm games.", "script": "powerplans/calypto_apply.bat"},
+  {"id": "core", "name": "CORE POWER PLAN", "description": "Minimalist power plan that keeps cores unparked and frequencies at maximum.", "script": "powerplans/core_apply.bat"},
+  {"id": "exmfree", "name": "EXMFREE POWER PLAN", "description": "Excessive power plan that removes all CPU power limits and thermal throttling.", "script": "powerplans/exmfree_apply.bat"},
+  {"id": "framesync", "name": "FRAMESYNC BOOST", "description": "Synchronized frame pacing power plan for stable FPS without stuttering.", "script": "powerplans/framesync_apply.bat"},
+  {"id": "hybred", "name": "HYBRED POWER PLAN", "description": "Hybrid power plan combining aggressive CPU states with adaptive GPU scaling.", "script": "powerplans/hybred_apply.bat"},
+  {"id": "kaisen", "name": "KAISEN POWER PLAN", "description": "Anime-inspired performance plan with maximum responsiveness and zero idle states.", "script": "powerplans/kaisen_apply.bat"},
+  {"id": "khorvie", "name": "KHORVIE POWER PLAN", "description": "Extreme power plan optimized for 240Hz+ monitors and competitive gaming.", "script": "powerplans/khorvie_apply.bat"},
+  {"id": "kirby", "name": "KIRBY POWER PLAN", "description": "Lightweight power plan for laptops that balances performance and battery life.", "script": "powerplans/kirby_apply.bat"},
+  {"id": "kizzimo", "name": "KIZZIMO POWER PLAN", "description": "Comprehensive power plan with deep system-level optimizations and tweaks.", "script": "powerplans/kizzimo_apply.bat"},
+  {"id": "lawliet", "name": "LAWLIET POWER PLAN", "description": "Stealth performance plan for undervolted systems with stable clock speeds.", "script": "powerplans/lawliet_apply.bat"},
+  {"id": "nexus", "name": "NEXUS POWER PLAN", "description": "Next-generation power plan with AI-driven workload prediction and scheduling.", "script": "powerplans/nexus_apply.bat"},
+  {"id": "powerx", "name": "POWERX POWER PLAN", "description": "Maximum overdrive power plan that pushes hardware to its absolute limits.", "script": "powerplans/powerx_apply.bat"},
+  {"id": "sapphire", "name": "SAPPHIRE POWER PLAN", "description": "Premium power plan for AMD systems with optimized core scheduling and voltages.", "script": "powerplans/sapphire_apply.bat"},
+  {"id": "vtrl", "name": "VTRL POWER PLAN", "description": "Vortex power plan with aggressive turbo boost and minimal power saving states.", "script": "powerplans/vtrl_apply.bat"},
+  {"id": "xilly", "name": "XILLY POWER PLAN", "description": "Simplified power plan for basic systems with straightforward performance tuning.", "script": "powerplans/xilly_apply.bat"},
+  {"id": "xos", "name": "XOS POWER PLAN", "description": "Xtreme operating system power plan with enterprise-grade performance policies.", "script": "powerplans/xos_apply.bat"}
+]

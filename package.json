@@ -1,0 +1,55 @@
+{
+  "name": "atom-toolbox",
+  "version": "0.1.5",
+  "description": "your way to all windows tweaks",
+  "main": "main.js",
+  "scripts": {
+    "start": "node ./node_modules/electron/cli.js .",
+    "dev": "node ./node_modules/electron/cli.js . --dev",
+    "build": "electron-builder --win nsis",
+    "dist": "electron-builder --win nsis"
+  },
+  "build": {
+    "appId": "com.projectatom.toolbox",
+    "productName": "AtomToolBox",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "src/**/*",
+      "power-plans/**/*",
+      "assets/**/*"
+    ],
+    "asarUnpack": [
+      "src/scripts/**/*",
+      "power-plans/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icons/app.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AtomToolBox",
+      "artifactName": "AtomToolBox-Setup-${version}.exe",
+      "include": "build/installer.nsh"
+    }
+  },
+  "devDependencies": {
+    "electron": "^28.3.3",
+    "electron-builder": "^25.1.7"
+  }
+}

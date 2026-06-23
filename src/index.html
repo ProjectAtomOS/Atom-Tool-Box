@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATOM TOOLBOX</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+  <header id="top-strip">
+    <div id="sys-info">
+      <span class="brand"><img src="../assets/logos/logo-dark.png" class="brand-logo" id="brand-logo-img" alt="ATOM"></span>
+      <span class="sep">|</span>
+      <span id="cpu-label">CPU: --</span>
+      <span class="sep">|</span>
+      <span id="gpu-label">GPU: --</span>
+      <span class="sep">|</span>
+      <span id="os-label">OS: --</span>
+    </div>
+    <div id="window-controls">
+      <button class="wc-btn" id="btn-minimize">_</button>
+      <button class="wc-btn" id="btn-maximize">[]</button>
+      <button class="wc-btn wc-close" id="btn-close">X</button>
+    </div>
+  </header>
+
+  <main id="layout">
+    <nav id="sidebar">
+      <div class="nav-group">
+        <div class="nav-group-title">TWEAKS</div>
+        <button class="nav-item active" data-view="dashboard">DASHBOARD</button>
+        <button class="nav-item" data-view="windows">WINDOWS</button>
+        <button class="nav-item" data-view="power">POWER</button>
+        <button class="nav-item" data-view="gaming">GAMING</button>
+        <button class="nav-item" data-view="network">NETWORK</button>
+        <button class="nav-item" data-view="gpu">GPU</button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">OTHERS</div>
+        <button class="nav-item" data-view="privacy">PRIVACY SETTINGS</button>
+        <button class="nav-item" data-view="contextmenu">CONTEXT MENU</button>
+        <button class="nav-item" data-view="brave">BRAVE DEBLOATER</button>
+        <button class="nav-item" data-view="cleaner">CLEANER</button>
+        <button class="nav-item" data-view="shortcuts">SHORTCUTS</button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">IMPORTANT</div>
+        <button class="nav-item" data-view="powerplans">POWER PLANS</button>
+        <button class="nav-item" data-view="apps">APP INSTALLER</button>
+        <button class="nav-item" data-view="applist">INSTALLED APPS</button>
+        <button class="nav-item" data-view="history">HISTORY</button>
+        <button class="nav-item" data-view="settings">SETTINGS</button>
+      </div>
+    </nav>
+
+    <section id="content-area"></section>
+  </main>
+
+  <footer id="bottom-strip">
+    <span>SYSTEM_INTEGRITY: <span id="integrity-status">SYSTEM_SECURE</span></span>
+    <span>ACTIVE_PROFILE: <span id="active-profile">DEFAULT</span></span>
+    <span>SESSION: <span id="session-time">00:00:00</span></span>
+  </footer>
+</div>
+<script>
+  // Load renderer inline to avoid CSP issues with nodeIntegration
+  require('./renderer.js');
+</script>
+</body>
+</html>

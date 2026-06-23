@@ -1,0 +1,152 @@
+[
+  {
+    "id": "timer_resolution",
+    "name": "TIMER RESOLUTION",
+    "description": "Sets timer resolution to 0.5ms by disabling dynamic tick and using platform tick.",
+    "script_on": "gaming/timer_resolution_on.bat",
+    "script_off": "gaming/timer_resolution_off.bat",
+    "command": "bcdedit /set useplatformtick yes",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $r = bcdedit /enum {current} 2>&1; if ($r -match 'useplatformtick\\s+Yes') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "game_mode",
+    "name": "ENABLE GAME MODE",
+    "description": "Enables Windows Game Mode to prioritize gaming performance.",
+    "script_on": "gaming/game_mode_on.bat",
+    "script_off": "gaming/game_mode_off.bat",
+    "command": "reg add \"HKCU\\Software\\Microsoft\\GameBar\" /v AutoGameModeEnabled /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\GameBar' -Name 'AutoGameModeEnabled' -ErrorAction Stop).AutoGameModeEnabled; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "hags",
+    "name": "ENABLE HAGS",
+    "description": "Enables Hardware-Accelerated GPU Scheduling for lower latency.",
+    "script_on": "gaming/hags_on.bat",
+    "script_off": "gaming/hags_off.bat",
+    "command": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers\" /v HwSchMode /t REG_DWORD /d 2 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'HwSchMode' -ErrorAction Stop).HwSchMode; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_fullscreen_optimizations",
+    "name": "DISABLE FULLSCREEN OPTIMIZATIONS",
+    "description": "Disables fullscreen optimizations for exclusive fullscreen in games.",
+    "script_on": "gaming/fullscreen_optimizations_on.bat",
+    "script_off": "gaming/fullscreen_optimizations_off.bat",
+    "command": "reg add \"HKCU\\System\\GameConfigStore\" /v GameDVR_FSEBehaviorMode /t REG_DWORD /d 2 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\System\\GameConfigStore' -Name 'GameDVR_FSEBehaviorMode' -ErrorAction Stop).GameDVR_FSEBehaviorMode; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_game_dvr",
+    "name": "DISABLE GAME DVR",
+    "description": "Disables Game DVR and background recording to free up resources.",
+    "script_on": "gaming/game_dvr_on.bat",
+    "script_off": "gaming/game_dvr_off.bat",
+    "command": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\GameDVR\" /v AllowGameDVR /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Policies\\Microsoft\\Windows\\GameDVR' -Name 'AllowGameDVR' -ErrorAction Stop).AllowGameDVR; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_game_bar",
+    "name": "DISABLE GAME BAR",
+    "description": "Disables the Xbox Game Bar overlay and hotkeys.",
+    "script_on": "gaming/game_bar_on.bat",
+    "script_off": "gaming/game_bar_off.bat",
+    "command": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\GameBar\" /v AllowGameBar /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Policies\\Microsoft\\Windows\\GameBar' -Name 'AllowGameBar' -ErrorAction Stop).AllowGameBar; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_memory_integrity",
+    "name": "DISABLE MEMORY INTEGRITY",
+    "description": "Disables Core Isolation Memory Integrity to reduce virtualization overhead.",
+    "script_on": "gaming/memory_integrity_on.bat",
+    "script_off": "gaming/memory_integrity_off.bat",
+    "command": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity\" /v Enabled /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity' -Name 'Enabled' -ErrorAction Stop).Enabled; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_vbs",
+    "name": "DISABLE VBS",
+    "description": "Disables Virtualization-Based Security to reclaim CPU performance.",
+    "script_on": "gaming/vbs_on.bat",
+    "script_off": "gaming/vbs_off.bat",
+    "command": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\" /v EnableVirtualizationBasedSecurity /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard' -Name 'EnableVirtualizationBasedSecurity' -ErrorAction Stop).EnableVirtualizationBasedSecurity; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "enable_vrr",
+    "name": "ENABLE VRR",
+    "description": "Enables Variable Refresh Rate for smoother gaming on supported displays.",
+    "script_on": "gaming/vrr_on.bat",
+    "script_off": "gaming/vrr_off.bat",
+    "command": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers\" /v VariableRefreshRate /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'VariableRefreshRate' -ErrorAction Stop).VariableRefreshRate; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "optimize_games",
+    "name": "OPTIMIZE GAMES",
+    "description": "Disables the platform clock for lower timer resolution in games.",
+    "script_on": "gaming/optimize_games_on.bat",
+    "script_off": "gaming/optimize_games_off.bat",
+    "command": "bcdedit /set useplatformclock false",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $r = bcdedit /enum {current} 2>&1; if ($r -match 'useplatformclock\\s+No') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "msi_mode",
+    "name": "ENABLE MSI MODE",
+    "description": "Enables Message Signaled Interrupts for all supported devices.",
+    "script_on": "gaming/msi_mode_on.bat",
+    "script_off": "gaming/msi_mode_off.bat",
+    "command": "powershell -NoProfile -Command \"$devices = Get-PnpDevice -Class 'Display','Net' -ErrorAction SilentlyContinue; foreach ($d in $devices) { $path = 'HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\' + $d.InstanceId + '\\Device Parameters\\Interrupt Management\\MessageSignaledInterruptProperties'; if (Test-Path $path) { Set-ItemProperty -Path $path -Name 'MSISupported' -Value 1 -ErrorAction SilentlyContinue } }\"",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $d = Get-PnpDevice -Class 'Display' -ErrorAction SilentlyContinue | Select-Object -First 1; $path = 'HKLM:\\SYSTEM\\CurrentControlSet\\Enum\\' + $d.InstanceId + '\\Device Parameters\\Interrupt Management\\MessageSignaledInterruptProperties'; $v = (Get-ItemProperty -Path $path -Name 'MSISupported' -ErrorAction Stop).MSISupported; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_hpet",
+    "name": "DISABLE HPET",
+    "description": "Disables High Precision Event Timer and dynamic tick for lower latency.",
+    "script_on": "gaming/disable_hpet_on.bat",
+    "script_off": "gaming/disable_hpet_off.bat",
+    "command": "bcdedit /set useplatformclock false",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $r = bcdedit /enum {current} 2>&1; if ($r -match 'useplatformclock\\s+No') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_spectre_meltdown",
+    "name": "DISABLE SPECTRE MELTDOWN",
+    "description": "Disables Spectre and Meltdown CPU mitigations for maximum performance.",
+    "script_on": "gaming/disable_spectre_meltdown_on.bat",
+    "script_off": "gaming/disable_spectre_meltdown_off.bat",
+    "command": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\" /v FeatureSettingsOverride /t REG_DWORD /d 3 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management' -Name 'FeatureSettingsOverride' -ErrorAction Stop).FeatureSettingsOverride; if ($v -eq 3) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_tpm",
+    "name": "DISABLE TPM",
+    "description": "Disables Credential Guard and TPM-based security scenarios.",
+    "script_on": "gaming/disable_tpm_on.bat",
+    "script_off": "gaming/disable_tpm_off.bat",
+    "command": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\CredentialGuard\" /v Enabled /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\CredentialGuard' -Name 'Enabled' -ErrorAction Stop).Enabled; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_prefetch",
+    "name": "DISABLE PREFETCH",
+    "description": "Disables the Windows Prefetcher to reduce disk activity.",
+    "script_on": "gaming/disable_prefetch_on.bat",
+    "script_off": "gaming/disable_prefetch_off.bat",
+    "command": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\\PrefetchParameters\" /v EnablePrefetcher /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management\\PrefetchParameters' -Name 'EnablePrefetcher' -ErrorAction Stop).EnablePrefetcher; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  }
+]

@@ -1,0 +1,192 @@
+[
+  {
+    "id": "disable_rewards",
+    "name": "DISABLE BRAVE REWARDS",
+    "description": "Disables Brave Rewards (BAT/crypto earning system) to reduce background tasks and UI clutter.",
+    "script_on": "brave/rewards_off.bat",
+    "script_off": "brave/rewards_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v BraveRewardsDisabled /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'BraveRewardsDisabled' -ErrorAction Stop).'BraveRewardsDisabled'; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_wallet",
+    "name": "DISABLE BRAVE WALLET",
+    "description": "Disables the built-in crypto wallet to remove unused UI elements and background services.",
+    "script_on": "brave/wallet_off.bat",
+    "script_off": "brave/wallet_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v BraveWalletDisabled /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'BraveWalletDisabled' -ErrorAction Stop).'BraveWalletDisabled'; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_vpn",
+    "name": "DISABLE BRAVE VPN",
+    "description": "Disables the Brave VPN feature and removes its promotional UI elements.",
+    "script_on": "brave/vpn_off.bat",
+    "script_off": "brave/vpn_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v BraveVPNDisabled /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'BraveVPNDisabled' -ErrorAction Stop).'BraveVPNDisabled'; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_ai_chat",
+    "name": "DISABLE BRAVE AI CHAT",
+    "description": "Disables the Brave Leo AI assistant and chat sidebar to reduce resource usage.",
+    "script_on": "brave/aichat_off.bat",
+    "script_off": "brave/aichat_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v BraveAIChatEnabled /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'BraveAIChatEnabled' -ErrorAction Stop).'BraveAIChatEnabled'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_stats_ping",
+    "name": "DISABLE BRAVE STATS PING",
+    "description": "Stops Brave from sending anonymous usage statistics pings.",
+    "script_on": "brave/statsping_off.bat",
+    "script_off": "brave/statsping_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v BraveStatsPingEnabled /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'BraveStatsPingEnabled' -ErrorAction Stop).'BraveStatsPingEnabled'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_metrics",
+    "name": "DISABLE METRICS REPORTING",
+    "description": "Disables Chromium metrics reporting to prevent data collection and background uploads.",
+    "script_on": "brave/metrics_off.bat",
+    "script_off": "brave/metrics_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v MetricsReportingEnabled /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'MetricsReportingEnabled' -ErrorAction Stop).'MetricsReportingEnabled'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_search_suggest",
+    "name": "DISABLE SEARCH SUGGESTIONS",
+    "description": "Stops sending keystrokes to search engines for autocomplete suggestions.",
+    "script_on": "brave/searchsuggest_off.bat",
+    "script_off": "brave/searchsuggest_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v SearchSuggestEnabled /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'SearchSuggestEnabled' -ErrorAction Stop).'SearchSuggestEnabled'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_error_pages",
+    "name": "DISABLE ALTERNATE ERROR PAGES",
+    "description": "Disables Brave's custom error pages and DNS error pages.",
+    "script_on": "brave/errorpages_off.bat",
+    "script_off": "brave/errorpages_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v AlternateErrorPagesEnabled /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'AlternateErrorPagesEnabled' -ErrorAction Stop).'AlternateErrorPagesEnabled'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_network_prediction",
+    "name": "DISABLE NETWORK PREDICTION",
+    "description": "Stops pre-loading and pre-resolving of web pages to reduce network traffic and CPU usage.",
+    "script_on": "brave/netprediction_off.bat",
+    "script_off": "brave/netprediction_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v NetworkPredictionOptions /t REG_DWORD /d 2 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'NetworkPredictionOptions' -ErrorAction Stop).'NetworkPredictionOptions'; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_background_mode",
+    "name": "DISABLE BACKGROUND MODE",
+    "description": "Prevents Brave from running background apps and processes when the browser is closed.",
+    "script_on": "brave/background_off.bat",
+    "script_off": "brave/background_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'BackgroundModeEnabled' -ErrorAction Stop).'BackgroundModeEnabled'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_sync",
+    "name": "DISABLE SYNC",
+    "description": "Disables Brave Sync to prevent cloud data synchronization and background sync tasks.",
+    "script_on": "brave/sync_off.bat",
+    "script_off": "brave/sync_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v SyncDisabled /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'SyncDisabled' -ErrorAction Stop).'SyncDisabled'; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_password_manager",
+    "name": "DISABLE PASSWORD MANAGER",
+    "description": "Disables the built-in password manager and autofill prompts.",
+    "script_on": "brave/password_off.bat",
+    "script_off": "brave/password_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v PasswordManagerEnabled /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'PasswordManagerEnabled' -ErrorAction Stop).'PasswordManagerEnabled'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_autofill_address",
+    "name": "DISABLE AUTOFILL ADDRESS",
+    "description": "Stops automatic address form filling to reduce data exposure and UI clutter.",
+    "script_on": "brave/autofilladdr_off.bat",
+    "script_off": "brave/autofilladdr_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v AutofillAddressEnabled /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'AutofillAddressEnabled' -ErrorAction Stop).'AutofillAddressEnabled'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "disable_autofill_card",
+    "name": "DISABLE AUTOFILL CREDIT CARD",
+    "description": "Disables credit card autofill to improve security and reduce UI clutter.",
+    "script_on": "brave/autofillcard_off.bat",
+    "script_off": "brave/autofillcard_on.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v AutofillCreditCardEnabled /t REG_DWORD /d 0 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'AutofillCreditCardEnabled' -ErrorAction Stop).'AutofillCreditCardEnabled'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "set_homepage_newtab",
+    "name": "SET HOMEPAGE TO NEW TAB",
+    "description": "Sets the Brave homepage to the New Tab page instead of a custom URL.",
+    "script_on": "brave/homepage_newtab_on.bat",
+    "script_off": "brave/homepage_newtab_off.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v HomepageIsNewTabPage /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'HomepageIsNewTabPage' -ErrorAction Stop).'HomepageIsNewTabPage'; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "set_restore_newtab",
+    "name": "SET RESTORE ON STARTUP TO NEW TAB",
+    "description": "Sets Brave to open a new tab page on startup instead of restoring previous session.",
+    "script_on": "brave/restore_newtab_on.bat",
+    "script_off": "brave/restore_newtab_off.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v RestoreOnStartup /t REG_DWORD /d 5 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'RestoreOnStartup' -ErrorAction Stop).'RestoreOnStartup'; if ($v -eq 5) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "enable_safe_browsing",
+    "name": "ENABLE SAFE BROWSING",
+    "description": "Enables Google's Safe Browsing protection to block malicious websites and downloads.",
+    "script_on": "brave/safebrowsing_on.bat",
+    "script_off": "brave/safebrowsing_off.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v SafeBrowsingEnabled /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'SafeBrowsingEnabled' -ErrorAction Stop).'SafeBrowsingEnabled'; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "enable_https_only",
+    "name": "ENABLE HTTPS ONLY MODE",
+    "description": "Forces all connections to use HTTPS encryption and warns on insecure HTTP sites.",
+    "script_on": "brave/httpsonly_on.bat",
+    "script_off": "brave/httpsonly_off.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v HttpsOnlyMode /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave' -Name 'HttpsOnlyMode' -ErrorAction Stop).'HttpsOnlyMode'; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  },
+  {
+    "id": "apply_all_debloat",
+    "name": "APPLY ALL DEBLOAT SETTINGS",
+    "description": "One-click applies all Brave debloat and security settings simultaneously.",
+    "script_on": "brave/apply_all_debloat.bat",
+    "script_off": "brave/revert_all_debloat.bat",
+    "command": "reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v BraveRewardsDisabled /t REG_DWORD /d 1 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v BraveWalletDisabled /t REG_DWORD /d 1 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v BraveVPNDisabled /t REG_DWORD /d 1 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v BraveAIChatEnabled /t REG_DWORD /d 0 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v BraveStatsPingEnabled /t REG_DWORD /d 0 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v MetricsReportingEnabled /t REG_DWORD /d 0 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v SearchSuggestEnabled /t REG_DWORD /d 0 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v AlternateErrorPagesEnabled /t REG_DWORD /d 0 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v NetworkPredictionOptions /t REG_DWORD /d 2 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v SyncDisabled /t REG_DWORD /d 1 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v PasswordManagerEnabled /t REG_DWORD /d 0 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v AutofillAddressEnabled /t REG_DWORD /d 0 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v AutofillCreditCardEnabled /t REG_DWORD /d 0 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v HomepageIsNewTabPage /t REG_DWORD /d 1 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v RestoreOnStartup /t REG_DWORD /d 5 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v SafeBrowsingEnabled /t REG_DWORD /d 1 /f && reg add \"HKLM\\SOFTWARE\\Policies\\BraveSoftware\\Brave\" /v HttpsOnlyMode /t REG_DWORD /d 1 /f",
+    "default_state": false,
+    "check": "powershell -NoProfile -Command \"try { $p = 'HKLM:\\SOFTWARE\\Policies\\BraveSoftware\\Brave'; $v1 = (Get-ItemProperty -Path $p -Name 'BraveRewardsDisabled' -ErrorAction Stop).'BraveRewardsDisabled'; $v2 = (Get-ItemProperty -Path $p -Name 'BraveWalletDisabled' -ErrorAction Stop).'BraveWalletDisabled'; $v3 = (Get-ItemProperty -Path $p -Name 'BraveVPNDisabled' -ErrorAction Stop).'BraveVPNDisabled'; $v4 = (Get-ItemProperty -Path $p -Name 'BraveAIChatEnabled' -ErrorAction Stop).'BraveAIChatEnabled'; $v5 = (Get-ItemProperty -Path $p -Name 'BraveStatsPingEnabled' -ErrorAction Stop).'BraveStatsPingEnabled'; $v6 = (Get-ItemProperty -Path $p -Name 'MetricsReportingEnabled' -ErrorAction Stop).'MetricsReportingEnabled'; $v7 = (Get-ItemProperty -Path $p -Name 'SearchSuggestEnabled' -ErrorAction Stop).'SearchSuggestEnabled'; $v8 = (Get-ItemProperty -Path $p -Name 'AlternateErrorPagesEnabled' -ErrorAction Stop).'AlternateErrorPagesEnabled'; $v9 = (Get-ItemProperty -Path $p -Name 'NetworkPredictionOptions' -ErrorAction Stop).'NetworkPredictionOptions'; $v10 = (Get-ItemProperty -Path $p -Name 'BackgroundModeEnabled' -ErrorAction Stop).'BackgroundModeEnabled'; $v11 = (Get-ItemProperty -Path $p -Name 'SyncDisabled' -ErrorAction Stop).'SyncDisabled'; $v12 = (Get-ItemProperty -Path $p -Name 'PasswordManagerEnabled' -ErrorAction Stop).'PasswordManagerEnabled'; $v13 = (Get-ItemProperty -Path $p -Name 'AutofillAddressEnabled' -ErrorAction Stop).'AutofillAddressEnabled'; $v14 = (Get-ItemProperty -Path $p -Name 'AutofillCreditCardEnabled' -ErrorAction Stop).'AutofillCreditCardEnabled'; $v15 = (Get-ItemProperty -Path $p -Name 'HomepageIsNewTabPage' -ErrorAction Stop).'HomepageIsNewTabPage'; $v16 = (Get-ItemProperty -Path $p -Name 'RestoreOnStartup' -ErrorAction Stop).'RestoreOnStartup'; $v17 = (Get-ItemProperty -Path $p -Name 'SafeBrowsingEnabled' -ErrorAction Stop).'SafeBrowsingEnabled'; $v18 = (Get-ItemProperty -Path $p -Name 'HttpsOnlyMode' -ErrorAction Stop).'HttpsOnlyMode'; if ($v1 -eq 1 -and $v2 -eq 1 -and $v3 -eq 1 -and $v4 -eq 0 -and $v5 -eq 0 -and $v6 -eq 0 -and $v7 -eq 0 -and $v8 -eq 0 -and $v9 -eq 2 -and $v10 -eq 0 -and $v11 -eq 1 -and $v12 -eq 0 -and $v13 -eq 0 -and $v14 -eq 0 -and $v15 -eq 1 -and $v16 -eq 5 -and $v17 -eq 1 -and $v18 -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+  }
+]
