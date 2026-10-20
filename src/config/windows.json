@@ -1,982 +1,792 @@
 [
     {
-        "id":  "disable_telemetry",
-        "name":  "DISABLE TELEMETRY",
-        "description":  "Disables Windows telemetry and diagnostic data collection.",
-        "script_on":  "windows/telemetry_off.bat",
-        "script_off":  "windows/telemetry_on.bat",
-        "command":  "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v AllowTelemetry /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\Software\\Policies\\Microsoft\\Windows\\DataCollection\u0027 -Name \u0027AllowTelemetry\u0027 -ErrorAction Stop).AllowTelemetry; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_actioncenter",
-        "name":  "DISABLE ACTIONCENTER",
-        "description":  "Disables the Action Center notification panel.",
-        "script_on":  "windows/actioncenter_off.bat",
-        "script_off":  "windows/actioncenter_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v DisableNotificationCenter /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer\u0027 -Name \u0027DisableNotificationCenter\u0027 -ErrorAction Stop).DisableNotificationCenter; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_autorestart",
-        "name":  "DISABLE AUTORESTART",
-        "description":  "Prevents automatic restart after Windows updates.",
-        "script_on":  "windows/autorestart_off.bat",
-        "script_off":  "windows/autorestart_on.bat",
-        "command":  "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\u0027 -Name \u0027NoAutoRebootWithLoggedOnUsers\u0027 -ErrorAction Stop).NoAutoRebootWithLoggedOnUsers; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_background",
-        "name":  "DISABLE BACKGROUND",
-        "description":  "Disables background app access globally.",
-        "script_on":  "windows/background_off.bat",
-        "script_off":  "windows/background_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications\" /v GlobalUserDisabled /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications\u0027 -Name \u0027GlobalUserDisabled\u0027 -ErrorAction Stop).GlobalUserDisabled; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_cortana",
-        "name":  "DISABLE CORTANA",
-        "description":  "Disables Cortana and search assistant.",
-        "script_on":  "windows/cortana_off.bat",
-        "script_off":  "windows/cortana_on.bat",
-        "command":  "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Windows Search\" /v AllowCortana /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\Software\\Policies\\Microsoft\\Windows\\Windows Search\u0027 -Name \u0027AllowCortana\u0027 -ErrorAction Stop).AllowCortana; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_defender",
-        "name":  "DISABLE DEFENDER",
-        "description":  "Disables Windows Defender anti-spyware and real-time protection.",
-        "script_on":  "windows/defender_off.bat",
-        "script_off":  "windows/defender_on.bat",
-        "command":  "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\" /v DisableAntiSpyware /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\Software\\Policies\\Microsoft\\Windows Defender\u0027 -Name \u0027DisableAntiSpyware\u0027 -ErrorAction Stop).DisableAntiSpyware; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_extensions",
-        "name":  "DISABLE EXTENSIONS",
-        "description":  "Hides file extensions in Windows Explorer.",
-        "script_on":  "windows/extensions_off.bat",
-        "script_off":  "windows/extensions_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v HideFileExt /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027HideFileExt\u0027 -ErrorAction Stop).HideFileExt; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_firewall",
-        "name":  "DISABLE FIREWALL",
-        "description":  "Disables the Windows Defender Firewall on all profiles.",
-        "script_on":  "windows/firewall_off.bat",
-        "script_off":  "windows/firewall_on.bat",
-        "command":  "netsh advfirewall set allprofiles state off",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $p = Get-NetFirewallProfile -ErrorAction Stop; if (($p | Where-Object { $_.Enabled -eq $true }).Count -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_hibernate",
-        "name":  "DISABLE HIBERNATE",
-        "description":  "Disables hibernation and removes the hiberfil.",
-        "script_on":  "windows/hibernate_off.bat",
-        "script_off":  "windows/hibernate_on.bat",
-        "command":  "powercfg /h off",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Power\u0027 -Name \u0027HibernateEnabled\u0027 -ErrorAction Stop).HibernateEnabled; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_hidden",
-        "name":  "DISABLE HIDDEN",
-        "description":  "Hides hidden and system files in Explorer.",
-        "script_on":  "windows/hidden_off.bat",
-        "script_off":  "windows/hidden_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Hidden /t REG_DWORD /d 2 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027Hidden\u0027 -ErrorAction Stop).Hidden; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_remote",
-        "name":  "DISABLE REMOTE",
-        "description":  "Disables Remote Desktop and terminal server connections.",
-        "script_on":  "windows/remote_off.bat",
-        "script_off":  "windows/remote_on.bat",
-        "command":  "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Terminal Server\" /v fDenyTSConnections /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server\u0027 -Name \u0027fDenyTSConnections\u0027 -ErrorAction Stop).fDenyTSConnections; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_restore",
-        "name":  "DISABLE RESTORE",
-        "description":  "Disables System Restore to save disk space.",
-        "script_on":  "windows/restore_off.bat",
-        "script_off":  "windows/restore_on.bat",
-        "command":  "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\SystemRestore\" /v DisableSR /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\Software\\Policies\\Microsoft\\Windows NT\\SystemRestore\u0027 -Name \u0027DisableSR\u0027 -ErrorAction Stop).DisableSR; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_search",
-        "name":  "DISABLE SEARCH",
-        "description":  "Disables the Windows Search indexing service.",
-        "script_on":  "windows/search_off.bat",
-        "script_off":  "windows/search_on.bat",
-        "command":  "sc config WSearch start=disabled",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $s = Get-Service -Name \u0027WSearch\u0027 -ErrorAction Stop; if ($s.StartType -eq \u0027Disabled\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_sleep",
-        "name":  "DISABLE SLEEP",
-        "description":  "Disables sleep and standby timeouts on AC power.",
-        "script_on":  "windows/sleep_off.bat",
-        "script_off":  "windows/sleep_on.bat",
-        "command":  "powercfg /change standby-timeout-ac 0",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $out = powercfg /query SCHEME_CURRENT SUB_SLEEP STANDBYIDLE; if ($out -match \u0027Current AC Power Setting Index: 0x00000000\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_storeauto",
-        "name":  "DISABLE STOREAUTO",
-        "description":  "Disables automatic Microsoft Store app updates.",
-        "script_on":  "windows/storeauto_off.bat",
-        "script_off":  "windows/storeauto_on.bat",
-        "command":  "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsStore\" /v AutoDownload /t REG_DWORD /d 2 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\Software\\Policies\\Microsoft\\WindowsStore\u0027 -Name \u0027AutoDownload\u0027 -ErrorAction Stop).AutoDownload; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_xbox",
-        "name":  "DISABLE XBOX",
-        "description":  "Disables Xbox background services.",
-        "script_on":  "windows/xbox_off.bat",
-        "script_off":  "windows/xbox_on.bat",
-        "command":  "sc config XboxGipSvc start=disabled",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $s = Get-Service -Name \u0027XboxGipSvc\u0027 -ErrorAction Stop; if ($s.StartType -eq \u0027Disabled\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "high_performance",
-        "name":  "HIGH PERFORMANCE",
-        "description":  "Activates the High Performance power plan.",
-        "script_on":  "cpu/high_perf_on.bat",
-        "script_off":  "cpu/high_perf_off.bat",
-        "command":  "powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $out = powercfg /getactivescheme; if ($out -match '8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c') { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_cstates",
-        "name":  "DISABLE CSTATES",
-        "description":  "Disables CPU C-states for maximum performance.",
-        "script_on":  "cpu/cstate_off.bat",
-        "script_off":  "cpu/cstate_on.bat",
-        "command":  "powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c SUB_PROCESSOR CPMINCORES 100",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $out = powercfg /query 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c SUB_PROCESSOR CPMINCORES; if ($out -match \u0027Current AC Power Setting Index: 0x00000064\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "processor_priority",
-        "name":  "PROCESSOR PRIORITY",
-        "description":  "Sets processor scheduling to prioritize foreground programs.",
-        "script_on":  "cpu/priority_off.bat",
-        "script_off":  "cpu/priority_on.bat",
-        "command":  "reg add \"HKLM\\System\\CurrentControlSet\\Control\\PriorityControl\" /v Win32PrioritySeparation /t REG_DWORD /d 2 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\System\\CurrentControlSet\\Control\\PriorityControl\u0027 -Name \u0027Win32PrioritySeparation\u0027 -ErrorAction Stop).Win32PrioritySeparation; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_core_parking",
-        "name":  "DISABLE CORE PARKING",
-        "description":  "Disables CPU core parking for consistent performance.",
-        "script_on":  "cpu/parking_off.bat",
-        "script_off":  "cpu/parking_on.bat",
-        "command":  "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR CPMINCORES 100",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $out = powercfg /query SCHEME_CURRENT SUB_PROCESSOR CPMINCORES; if ($out -match \u0027Current AC Power Setting Index: 0x00000064\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_boost",
-        "name":  "DISABLE BOOST",
-        "description":  "Disables CPU turbo boost for stable clocks.",
-        "script_on":  "cpu/boost_off.bat",
-        "script_off":  "cpu/boost_on.bat",
-        "command":  "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PERFBOOSTMODE 2",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $out = powercfg /query SCHEME_CURRENT SUB_PROCESSOR PERFBOOSTMODE; if ($out -match \u0027Current AC Power Setting Index: 0x00000002\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_cooling",
-        "name":  "DISABLE COOLING",
-        "description":  "Disables active processor cooling policy.",
-        "script_on":  "cpu/cooling_off.bat",
-        "script_off":  "cpu/cooling_on.bat",
-        "command":  "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR SYSCOOLPOL 1",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $out = powercfg /query SCHEME_CURRENT SUB_PROCESSOR SYSCOOLPOL; if ($out -match \u0027Current AC Power Setting Index: 0x00000001\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_hetero",
-        "name":  "DISABLE HETERO",
-        "description":  "Disables heterogeneous CPU scheduling.",
-        "script_on":  "cpu/hetero_off.bat",
-        "script_off":  "cpu/hetero_on.bat",
-        "command":  "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\kernel\" /v HeteroScheduling /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\System\\CurrentControlSet\\Control\\Session Manager\\kernel\u0027 -Name \u0027HeteroScheduling\u0027 -ErrorAction Stop).HeteroScheduling; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_hwaccel",
-        "name":  "DISABLE HWACCEL",
-        "description":  "Disables hardware memory management acceleration.",
-        "script_on":  "cpu/hwaccel_off.bat",
-        "script_off":  "cpu/hwaccel_on.bat",
-        "command":  "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management\" /v FeatureSettings /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management\u0027 -Name \u0027FeatureSettings\u0027 -ErrorAction Stop).FeatureSettings; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_idle",
-        "name":  "DISABLE IDLE",
-        "description":  "Disables CPU idle states for reduced latency.",
-        "script_on":  "cpu/idle_off.bat",
-        "script_off":  "cpu/idle_on.bat",
-        "command":  "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR IDLEDISABLE 1",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $out = powercfg /query SCHEME_CURRENT SUB_PROCESSOR IDLEDISABLE; if ($out -match \u0027Current AC Power Setting Index: 0x00000001\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_maxstate",
-        "name":  "DISABLE MAXSTATE",
-        "description":  "Sets CPU maximum throttle state to 100%.",
-        "script_on":  "cpu/maxstate_off.bat",
-        "script_off":  "cpu/maxstate_on.bat",
-        "command":  "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMAX 100",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $out = powercfg /query SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMAX; if ($out -match \u0027Current AC Power Setting Index: 0x00000064\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_minstate",
-        "name":  "DISABLE MINSTATE",
-        "description":  "Sets CPU minimum throttle state to 100%.",
-        "script_on":  "cpu/minstate_off.bat",
-        "script_off":  "cpu/minstate_on.bat",
-        "command":  "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMIN 100",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $out = powercfg /query SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMIN; if ($out -match \u0027Current AC Power Setting Index: 0x00000064\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_mitigations",
-        "name":  "DISABLE MITIGATIONS",
-        "description":  "Disables Spectre and Meltdown CPU mitigations.",
-        "script_on":  "cpu/mitigations_off.bat",
-        "script_off":  "cpu/mitigations_on.bat",
-        "command":  "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management\" /v FeatureSettingsOverride /t REG_DWORD /d 3 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management\u0027 -Name \u0027FeatureSettingsOverride\u0027 -ErrorAction Stop).FeatureSettingsOverride; if ($v -eq 3) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_pwrthrottle",
-        "name":  "DISABLE PWRTHROTTLE",
-        "description":  "Disables Windows power throttling on apps.",
-        "script_on":  "cpu/pwrthrottle_off.bat",
-        "script_off":  "cpu/pwrthrottle_on.bat",
-        "command":  "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Power\\PowerThrottling\" /v PowerThrottlingOff /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\System\\CurrentControlSet\\Control\\Power\\PowerThrottling\u0027 -Name \u0027PowerThrottlingOff\u0027 -ErrorAction Stop).PowerThrottlingOff; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_respond",
-        "name":  "DISABLE RESPOND",
-        "description":  "Disables the processor responsiveness timer.",
-        "script_on":  "cpu/respond_off.bat",
-        "script_off":  "cpu/respond_on.bat",
-        "command":  "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR RESPONSIVENESSTIMER 1",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $out = powercfg /query SCHEME_CURRENT SUB_PROCESSOR RESPONSIVENESSTIMER; if ($out -match \u0027Current AC Power Setting Index: 0x00000001\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_virt",
-        "name":  "DISABLE VIRT",
-        "description":  "Disables virtualization-based security.",
-        "script_on":  "cpu/virt_off.bat",
-        "script_off":  "cpu/virt_on.bat",
-        "command":  "reg add \"HKLM\\System\\CurrentControlSet\\Control\\DeviceGuard\" /v EnableVirtualizationBasedSecurity /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\System\\CurrentControlSet\\Control\\DeviceGuard\u0027 -Name \u0027EnableVirtualizationBasedSecurity\u0027 -ErrorAction Stop).EnableVirtualizationBasedSecurity; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_sechealth",
-        "name":  "DISABLE SECHEALTH",
-        "description":  "Disables the Windows Security Health service.",
-        "script_on":  "others/sechealth_off.bat",
-        "script_off":  "others/sechealth_on.bat",
-        "command":  "sc config SecurityHealthService start=disabled",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $s = Get-Service -Name \u0027SecurityHealthService\u0027 -ErrorAction Stop; if ($s.StartType -eq \u0027Disabled\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_speech",
-        "name":  "DISABLE SPEECH",
-        "description":  "Disables online speech privacy and data collection.",
-        "script_on":  "others/speech_off.bat",
-        "script_off":  "others/speech_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Speech_OneCore\\Settings\\OnlineSpeechPrivacy\" /v HasAccepted /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Speech_OneCore\\Settings\\OnlineSpeechPrivacy\u0027 -Name \u0027HasAccepted\u0027 -ErrorAction Stop).HasAccepted; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_copilot",
-        "name":  "DISABLE COPILOT",
-        "description":  "Disables Windows Copilot AI assistant.",
-        "script_on":  "win11/copilot_on.bat",
-        "script_off":  "win11/copilot_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot\" /v TurnOffWindowsCopilot /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot\u0027 -Name \u0027TurnOffWindowsCopilot\u0027 -ErrorAction Stop).TurnOffWindowsCopilot; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_recall",
-        "name":  "DISABLE RECALL",
-        "description":  "Disables Windows Recall AI snapshot and analysis feature.",
-        "script_on":  "win11/recall_on.bat",
-        "script_off":  "win11/recall_off.bat",
-        "command":  "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows AI\" /v DisableAIDataAnalysis /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows AI\u0027 -Name \u0027DisableAIDataAnalysis\u0027 -ErrorAction Stop).DisableAIDataAnalysis; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_widgets_win11",
-        "name":  "DISABLE WIDGETS WIN11",
-        "description":  "Disables Windows 11 widgets via policy.",
-        "script_on":  "win11/widgets_win11_on.bat",
-        "script_off":  "win11/widgets_win11_off.bat",
-        "command":  "reg add \"HKLM\\Software\\Policies\\Microsoft\\Dsh\" /v AllowNewsAndInterests /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\Software\\Policies\\Microsoft\\Dsh\u0027 -Name \u0027AllowNewsAndInterests\u0027 -ErrorAction Stop).AllowNewsAndInterests; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_edge_bg_win11",
-        "name":  "DISABLE EDGE BACKGROUND WIN11",
-        "description":  "Prevents Microsoft Edge from running background processes.",
-        "script_on":  "win11/edge_win11_on.bat",
-        "script_off":  "win11/edge_win11_off.bat",
-        "command":  "reg add \"HKLM\\Software\\Policies\\Microsoft\\Edge\" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\Software\\Policies\\Microsoft\\Edge\u0027 -Name \u0027BackgroundModeEnabled\u0027 -ErrorAction Stop).BackgroundModeEnabled; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_onedrive_win11",
-        "name":  "DISABLE ONEDRIVE WIN11",
-        "description":  "Disables OneDrive sync via registry.",
-        "script_on":  "win11/onedrive_win11_on.bat",
-        "script_off":  "win11/onedrive_win11_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\OneDrive\" /v DisableFileSyncNGSC /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\OneDrive\u0027 -Name \u0027DisableFileSyncNGSC\u0027 -ErrorAction Stop).DisableFileSyncNGSC; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "remove_teams",
-        "name":  "REMOVE TEAMS",
-        "description":  "Removes the Microsoft Teams app package.",
-        "script_on":  "win11/teams_on.bat",
-        "script_off":  "win11/teams_off.bat",
-        "command":  "powershell -NoProfile -Command \"Get-AppxPackage *Teams* | Remove-AppxPackage\"",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $p = Get-AppxPackage *Teams* -ErrorAction SilentlyContinue; if (-not $p) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "remove_phone_link",
-        "name":  "REMOVE PHONE LINK",
-        "description":  "Removes the Phone Link (Your Phone) app package.",
-        "script_on":  "win11/phone_link_on.bat",
-        "script_off":  "win11/phone_link_off.bat",
-        "command":  "powershell -NoProfile -Command \"Get-AppxPackage *YourPhone* | Remove-AppxPackage\"",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $p = Get-AppxPackage *YourPhone* -ErrorAction SilentlyContinue; if (-not $p) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_spotlight",
-        "name":  "DISABLE SPOTLIGHT",
-        "description":  "Disables Windows Spotlight on the lock screen.",
-        "script_on":  "win11/spotlight_on.bat",
-        "script_off":  "win11/spotlight_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v RotatingLockScreenEnabled /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\u0027 -Name \u0027RotatingLockScreenEnabled\u0027 -ErrorAction Stop).RotatingLockScreenEnabled; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_suggested_content",
-        "name":  "DISABLE SUGGESTED CONTENT",
-        "description":  "Disables suggested content and tips in Settings.",
-        "script_on":  "win11/suggested_content_on.bat",
-        "script_off":  "win11/suggested_content_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v SubscribedContent-338393Enabled /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\u0027 -Name \u0027SubscribedContent-338393Enabled\u0027 -ErrorAction Stop).SubscribedContent-338393Enabled; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_stickers",
-        "name":  "DISABLE STICKERS",
-        "description":  "Disables desktop stickers feature.",
-        "script_on":  "win11/stickers_on.bat",
-        "script_off":  "win11/stickers_off.bat",
-        "command":  "reg add \"HKLM\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\Stickers\" /v EnableStickers /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\Stickers\u0027 -Name \u0027EnableStickers\u0027 -ErrorAction Stop).EnableStickers; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_tabs_explorer",
-        "name":  "DISABLE TABS EXPLORER",
-        "description":  "Disables tabs in File Explorer and uses separate windows.",
-        "script_on":  "win11/tabs_explorer_on.bat",
-        "script_off":  "win11/tabs_explorer_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v SeparateProcess /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027SeparateProcess\u0027 -ErrorAction Stop).SeparateProcess; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "remove_chat",
-        "name":  "REMOVE CHAT",
-        "description":  "Removes the Teams Chat icon from the taskbar.",
-        "script_on":  "win11/chat_on.bat",
-        "script_off":  "win11/chat_off.bat",
-        "command":  "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Windows Chat\" /v ChatIcon /t REG_DWORD /d 3 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\Software\\Policies\\Microsoft\\Windows\\Windows Chat\u0027 -Name \u0027ChatIcon\u0027 -ErrorAction Stop).ChatIcon; if ($v -eq 3) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "remove_dev_home",
-        "name":  "REMOVE DEV HOME",
-        "description":  "Removes the Dev Home application package.",
-        "script_on":  "win11/dev_home_on.bat",
-        "script_off":  "win11/dev_home_off.bat",
-        "command":  "powershell -NoProfile -Command \"Get-AppxPackage *DevHome* | Remove-AppxPackage\"",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $p = Get-AppxPackage *DevHome* -ErrorAction SilentlyContinue; if (-not $p) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_co_creator",
-        "name":  "DISABLE CO CREATOR",
-        "description":  "Disables Windows Co-Creator and Paint AI features.",
-        "script_on":  "win11/co_creator_on.bat",
-        "script_off":  "win11/co_creator_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v SubscribedContent-353698Enabled /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\u0027 -Name \u0027SubscribedContent-353698Enabled\u0027 -ErrorAction Stop).SubscribedContent-353698Enabled; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "enable_compact_mode",
-        "name":  "ENABLE COMPACT MODE",
-        "description":  "Enables compact spacing in File Explorer.",
-        "script_on":  "win11/compact_mode_on.bat",
-        "script_off":  "win11/compact_mode_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v UseCompactMode /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027UseCompactMode\u0027 -ErrorAction Stop).UseCompactMode; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "left_align_taskbar_win11",
-        "name":  "LEFT ALIGN TASKBAR WIN11",
-        "description":  "Aligns the Windows 11 taskbar to the left.",
-        "script_on":  "win11/taskbar_align_on.bat",
-        "script_off":  "win11/taskbar_align_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v TaskbarAl /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027TaskbarAl\u0027 -ErrorAction Stop).TaskbarAl; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_start_recommended",
-        "name":  "DISABLE START RECOMMENDED",
-        "description":  "Disables recommended section in the Start Menu.",
-        "script_on":  "win11/start_recommended_on.bat",
-        "script_off":  "win11/start_recommended_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_IrisRecommendations /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027Start_IrisRecommendations\u0027 -ErrorAction Stop).Start_IrisRecommendations; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_snap_layouts",
-        "name":  "DISABLE SNAP LAYOUTS",
-        "description":  "Disables the snap layouts flyout when hovering over maximize.",
-        "script_on":  "win11/snap_layouts_on.bat",
-        "script_off":  "win11/snap_layouts_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v EnableSnapAssistFlyout /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027EnableSnapAssistFlyout\u0027 -ErrorAction Stop).EnableSnapAssistFlyout; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_search_highlights",
-        "name":  "DISABLE SEARCH HIGHLIGHTS",
-        "description":  "Disables dynamic search highlights and daily content in search.",
-        "script_on":  "win11/search_highlights_on.bat",
-        "script_off":  "win11/search_highlights_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings\" /v IsDynamicSearchBoxEnabled /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings\u0027 -Name \u0027IsDynamicSearchBoxEnabled\u0027 -ErrorAction Stop).IsDynamicSearchBoxEnabled; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "pause_updates",
-        "name":  "PAUSE UPDATES",
-        "description":  "Pauses Windows updates until year 2099.",
-        "script_on":  "updates/pause_updates_on.bat",
-        "script_off":  "updates/pause_updates_off.bat",
-        "command":  "reg add \"HKLM\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings\" /v PauseUpdatesExpiryTime /t REG_SZ /d \"2099-12-31T23:59:59\" /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings\u0027 -Name \u0027PauseUpdatesExpiryTime\u0027 -ErrorAction Stop).PauseUpdatesExpiryTime; if ($v -match \u00272099\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "block_drivers",
-        "name":  "BLOCK DRIVERS",
-        "description":  "Blocks automatic driver updates via Windows Update.",
-        "script_on":  "updates/block_drivers_on.bat",
-        "script_off":  "updates/block_drivers_off.bat",
-        "command":  "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v ExcludeWUDriversInQualityUpdate /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\u0027 -Name \u0027ExcludeWUDriversInQualityUpdate\u0027 -ErrorAction Stop).ExcludeWUDriversInQualityUpdate; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "defer_features",
-        "name":  "DEFER FEATURES",
-        "description":  "Defers feature updates for up to 365 days.",
-        "script_on":  "updates/defer_features_on.bat",
-        "script_off":  "updates/defer_features_off.bat",
-        "command":  "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v DeferFeatureUpdatesPeriodInDays /t REG_DWORD /d 365 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\u0027 -Name \u0027DeferFeatureUpdatesPeriodInDays\u0027 -ErrorAction Stop).DeferFeatureUpdatesPeriodInDays; if ($v -eq 365) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "defer_quality",
-        "name":  "DEFER QUALITY",
-        "description":  "Defers quality updates for up to 30 days.",
-        "script_on":  "updates/defer_quality_on.bat",
-        "script_off":  "updates/defer_quality_off.bat",
-        "command":  "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v DeferQualityUpdatesPeriodInDays /t REG_DWORD /d 30 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\u0027 -Name \u0027DeferQualityUpdatesPeriodInDays\u0027 -ErrorAction Stop).DeferQualityUpdatesPeriodInDays; if ($v -eq 30) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_auto_reboot",
-        "name":  "DISABLE AUTO REBOOT",
-        "description":  "Prevents Windows from automatically rebooting while a user is logged in.",
-        "script_on":  "updates/auto_reboot_on.bat",
-        "script_off":  "updates/auto_reboot_off.bat",
-        "command":  "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\u0027 -Name \u0027NoAutoRebootWithLoggedOnUsers\u0027 -ErrorAction Stop).NoAutoRebootWithLoggedOnUsers; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "max_active_hours",
-        "name":  "MAX ACTIVE HOURS",
-        "description":  "Sets active hours to 00:00-23:00 to prevent reboots during the day.",
-        "script_on":  "updates/active_hours_on.bat",
-        "script_off":  "updates/active_hours_off.bat",
-        "command":  "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v SetActiveHours /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\u0027 -Name \u0027SetActiveHours\u0027 -ErrorAction Stop).SetActiveHours; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "set_metered",
-        "name":  "SET METERED",
-        "description":  "Sets Ethernet connection as metered to reduce background data usage.",
-        "script_on":  "updates/metered_on.bat",
-        "script_off":  "updates/metered_off.bat",
-        "command":  "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\NetworkList\\DefaultMediaCost\" /v Ethernet /t REG_DWORD /d 2 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\NetworkList\\DefaultMediaCost\u0027 -Name \u0027Ethernet\u0027 -ErrorAction Stop).Ethernet; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_update_notifications",
-        "name":  "DISABLE UPDATE NOTIFICATIONS",
-        "description":  "Disables Windows Update notifications and auto-download prompts.",
-        "script_on":  "updates/update_notifications_on.bat",
-        "script_off":  "updates/update_notifications_off.bat",
-        "command":  "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v AUOptions /t REG_DWORD /d 2 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\u0027 -Name \u0027AUOptions\u0027 -ErrorAction Stop).AUOptions; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_delivery_opt",
-        "name":  "DISABLE DELIVERY OPT",
-        "description":  "Disables Delivery Optimization peer-to-peer update sharing.",
-        "script_on":  "updates/delivery_opt_on.bat",
-        "script_off":  "updates/delivery_opt_off.bat",
-        "command":  "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\DeliveryOptimization\\Config\" /v DODownloadMode /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\DeliveryOptimization\\Config\u0027 -Name \u0027DODownloadMode\u0027 -ErrorAction Stop).DODownloadMode; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_windows_update",
-        "name":  "DISABLE WINDOWS UPDATE",
-        "description":  "Completely disables the Windows Update service.",
-        "script_on":  "updates/windows_update_on.bat",
-        "script_off":  "updates/windows_update_off.bat",
-        "command":  "sc config wuauserv start= disabled",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $s = Get-Service -Name \u0027wuauserv\u0027 -ErrorAction Stop; if ($s.StartType -eq \u0027Disabled\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_wufb",
-        "name":  "DISABLE WUFB",
-        "description":  "Disables Windows Update for Business auto-update policy.",
-        "script_on":  "updates/wufb_on.bat",
-        "script_off":  "updates/wufb_off.bat",
-        "command":  "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoUpdate /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\u0027 -Name \u0027NoAutoUpdate\u0027 -ErrorAction Stop).NoAutoUpdate; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_update_orchestrator",
-        "name":  "DISABLE UPDATE ORCHESTRATOR",
-        "description":  "Disables the Update Orchestrator service.",
-        "script_on":  "updates/update_orchestrator_on.bat",
-        "script_off":  "updates/update_orchestrator_off.bat",
-        "command":  "sc config UsoSvc start= disabled",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $s = Get-Service -Name \u0027UsoSvc\u0027 -ErrorAction Stop; if ($s.StartType -eq \u0027Disabled\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_medusvc",
-        "name":  "DISABLE MEDUSVC",
-        "description":  "Disables the Windows Update Medic Service.",
-        "script_on":  "updates/medusvc_on.bat",
-        "script_off":  "updates/medusvc_off.bat",
-        "command":  "sc config WaaSMedicSvc start= disabled",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $s = Get-Service -Name \u0027WaaSMedicSvc\u0027 -ErrorAction Stop; if ($s.StartType -eq \u0027Disabled\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_animations",
-        "name":  "DISABLE ANIMATIONS",
-        "description":  "Turns off window minimize/maximize animations and taskbar thumbnail previews.",
-        "script_on":  "visuals/animations_off.bat",
-        "script_off":  "visuals/animations_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v TaskbarAnimations /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027TaskbarAnimations\u0027 -ErrorAction Stop).\u0027TaskbarAnimations\u0027; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_transparency",
-        "name":  "DISABLE TRANSPARENCY",
-        "description":  "Disables acrylic blur effects on taskbar, action center, and title bars.",
-        "script_on":  "visuals/transparency_off.bat",
-        "script_off":  "visuals/transparency_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v EnableTransparency /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\u0027 -Name \u0027EnableTransparency\u0027 -ErrorAction Stop).\u0027EnableTransparency\u0027; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_shadows",
-        "name":  "DISABLE WINDOW SHADOWS",
-        "description":  "Removes drop shadows beneath application windows and dialog boxes.",
-        "script_on":  "visuals/shadows_off.bat",
-        "script_off":  "visuals/shadows_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v VisualFXSetting /t REG_DWORD /d 2 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027VisualFXSetting\u0027 -ErrorAction Stop).\u0027VisualFXSetting\u0027; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_snap",
-        "name":  "DISABLE WINDOW SNAP",
-        "description":  "Disables automatic window snapping, docking, and tiling behavior.",
-        "script_on":  "visuals/snap_off.bat",
-        "script_off":  "visuals/snap_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v SnapAssist /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027SnapAssist\u0027 -ErrorAction Stop).\u0027SnapAssist\u0027; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "performance_mode",
-        "name":  "PERFORMANCE MODE",
-        "description":  "Adjusts system visual settings for maximum performance over appearance.",
-        "script_on":  "visuals/performance_on.bat",
-        "script_off":  "visuals/performance_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects\" /v VisualFXSetting /t REG_DWORD /d 2 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects\u0027 -Name \u0027VisualFXSetting\u0027 -ErrorAction Stop).\u0027VisualFXSetting\u0027; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_thumb_preview",
-        "name":  "DISABLE THUMBNAIL PREVIEW",
-        "description":  "Disables taskbar thumbnail previews when hovering over running applications.",
-        "script_on":  "visuals/thumb_off.bat",
-        "script_off":  "visuals/thumb_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v ExtendedUIHoverTime /t REG_DWORD /d 30000 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027ExtendedUIHoverTime\u0027 -ErrorAction Stop).\u0027ExtendedUIHoverTime\u0027; if ($v -eq 30000) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_aero_peek",
-        "name":  "DISABLE AERO PEEK",
-        "description":  "Disables Aero Peek desktop preview when hovering over the show desktop button.",
-        "script_on":  "visuals/aeropeek_off.bat",
-        "script_off":  "visuals/aeropeek_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\DWM\" /v EnableAeroPeek /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\DWM\u0027 -Name \u0027EnableAeroPeek\u0027 -ErrorAction Stop).\u0027EnableAeroPeek\u0027; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_menu_anim",
-        "name":  "DISABLE MENU ANIMATIONS",
-        "description":  "Turns off fade and slide animations for context menus and dropdowns.",
-        "script_on":  "visuals/menu_off.bat",
-        "script_off":  "visuals/menu_on.bat",
-        "command":  "reg add \"HKCU\\Control Panel\\Desktop\" /v MenuShowDelay /t REG_SZ /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Control Panel\\Desktop\u0027 -Name \u0027MenuShowDelay\u0027 -ErrorAction Stop).MenuShowDelay; if ($v -eq \u00270\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_combo_anim",
-        "name":  "DISABLE COMBOBOX ANIMATION",
-        "description":  "Disables open/close animation effects in combo box selection controls.",
-        "script_on":  "visuals/combo_off.bat",
-        "script_off":  "visuals/combo_on.bat",
-        "command":  "reg add \"HKCU\\Control Panel\\Desktop\" /v ComboBoxAnimation /t REG_SZ /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Control Panel\\Desktop\u0027 -Name \u0027ComboBoxAnimation\u0027 -ErrorAction Stop).ComboBoxAnimation; if ($v -eq \u00270\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_tooltip_anim",
-        "name":  "DISABLE TOOLTIP ANIMATION",
-        "description":  "Disables fade-in animation effects for system tooltip popups.",
-        "script_on":  "visuals/tooltip_off.bat",
-        "script_off":  "visuals/tooltip_on.bat",
-        "command":  "reg add \"HKCU\\Control Panel\\Desktop\" /v UserPreferencesMask /t REG_BINARY /d 9032078010000000 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Control Panel\\Desktop\u0027 -Name \u0027UserPreferencesMask\u0027 -ErrorAction Stop).UserPreferencesMask; if ($v -eq [byte[]]@(0x90,0x32,0x07,0x80,0x10,0x00,0x00,0x00)) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_cursor_shadow",
-        "name":  "DISABLE CURSOR SHADOW",
-        "description":  "Removes the drop shadow rendered beneath the mouse cursor pointer.",
-        "script_on":  "visuals/cursor_off.bat",
-        "script_off":  "visuals/cursor_on.bat",
-        "command":  "reg add \"HKCU\\Control Panel\\Desktop\" /v UserPreferencesMask /t REG_BINARY /d d032078010000000 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Control Panel\\Desktop\u0027 -Name \u0027UserPreferencesMask\u0027 -ErrorAction Stop).UserPreferencesMask; if ($v -eq [byte[]]@(0xd0,0x32,0x07,0x80,0x10,0x00,0x00,0x00)) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_listbox_smooth",
-        "name":  "DISABLE LISTBOX SMOOTH SCROLL",
-        "description":  "Disables smooth scrolling animation in list boxes for instant response.",
-        "script_on":  "visuals/listbox_off.bat",
-        "script_off":  "visuals/listbox_on.bat",
-        "command":  "reg add \"HKCU\\Control Panel\\Desktop\" /v SmoothScroll /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Control Panel\\Desktop\u0027 -Name \u0027SmoothScroll\u0027 -ErrorAction Stop).\u0027SmoothScroll\u0027; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_font_smoothing",
-        "name":  "DISABLE FONT SMOOTHING",
-        "description":  "Disables ClearType font smoothing for sharper text at the cost of aliasing.",
-        "script_on":  "visuals/fontsmooth_off.bat",
-        "script_off":  "visuals/fontsmooth_on.bat",
-        "command":  "reg add \"HKCU\\Control Panel\\Desktop\" /v FontSmoothing /t REG_SZ /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Control Panel\\Desktop\u0027 -Name \u0027FontSmoothing\u0027 -ErrorAction Stop).FontSmoothing; if ($v -eq \u00270\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_taskbar_glow",
-        "name":  "DISABLE TASKBAR GLOW",
-        "description":  "Disables glowing highlight effects on taskbar buttons when applications are active.",
-        "script_on":  "visuals/taskglow_off.bat",
-        "script_off":  "visuals/taskglow_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v TaskbarGlowLevel /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027TaskbarGlowLevel\u0027 -ErrorAction Stop).\u0027TaskbarGlowLevel\u0027; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_window_border",
-        "name":  "DISABLE WINDOW BORDER SHADOW",
-        "description":  "Removes the 1px border shadow drawn around active windows.",
-        "script_on":  "visuals/border_off.bat",
-        "script_off":  "visuals/border_on.bat",
-        "command":  "reg add \"HKCU\\Control Panel\\Desktop\\WindowMetrics\" /v BorderWidth /t REG_SZ /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Control Panel\\Desktop\\WindowMetrics\u0027 -Name \u0027BorderWidth\u0027 -ErrorAction Stop).BorderWidth; if ($v -eq \u00270\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "best_performance",
-        "name":  "SET VISUAL EFFECTS TO BEST PERFORMANCE",
-        "description":  "Configures Windows for best performance by disabling all visual effects and animations.",
-        "script_on":  "visuals/bestperf_on.bat",
-        "script_off":  "visuals/bestperf_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects\" /v VisualFXSetting /t REG_DWORD /d 2 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects\u0027 -Name \u0027VisualFXSetting\u0027 -ErrorAction Stop).VisualFXSetting; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "enable_end_task",
-        "name":  "ENABLE END TASK WITH RIGHT CLICK",
-        "description":  "Adds an \u0027End Task\u0027 option to the taskbar right-click context menu.",
-        "script_on":  "explorer/endtask_on.bat",
-        "script_off":  "explorer/endtask_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings\" /v TaskbarEndTask /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings\u0027 -Name \u0027TaskbarEndTask\u0027 -ErrorAction Stop).TaskbarEndTask; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_folder_discovery",
-        "name":  "DISABLE AUTOMATIC FOLDER DISCOVERY",
-        "description":  "Stops File Explorer from automatically changing folder view types based on contents.",
-        "script_on":  "explorer/folderdiscovery_off.bat",
-        "script_off":  "explorer/folderdiscovery_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\Bags\\AllFolders\\Shell\" /v FolderType /t REG_SZ /d NotSpecified /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\Bags\\AllFolders\\Shell\u0027 -Name \u0027FolderType\u0027 -ErrorAction Stop).FolderType; if ($v -eq \u0027NotSpecified\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_home_gallery",
-        "name":  "DISABLE FILE EXPLORER HOME \u0026 GALLERY",
-        "description":  "Hides the Home and Gallery buttons from the File Explorer navigation bar.",
-        "script_on":  "explorer/homegallery_off.bat",
-        "script_off":  "explorer/homegallery_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v HideHomeButton /t REG_DWORD /d 1 /f \u0026\u0026 reg add \"HKCU\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v HideGalleryButton /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer\u0027 -Name \u0027HideHomeButton\u0027 -ErrorAction Stop).HideHomeButton; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "enable_classic_menu",
-        "name":  "ENABLE RIGHT-CLICK CLASSIC MENU",
-        "description":  "Restores the classic Windows 10-style right-click context menu in Windows 11.",
-        "script_on":  "explorer/classicmenu_on.bat",
-        "script_off":  "explorer/classicmenu_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32\" /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { Get-ItemProperty -Path \u0027HKCU:\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32\u0027 -ErrorAction Stop | Out-Null; exit 0 } catch { exit 1 }\""
-    },
-    {
-        "id":  "enable_start_layout",
-        "name":  "ENABLE START MENU PREVIOUS LAYOUT",
-        "description":  "Restores the classic Start Menu layout on Windows 11.",
-        "script_on":  "explorer/startlayout_on.bat",
-        "script_off":  "explorer/startlayout_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_ShowClassicMode /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027Start_ShowClassicMode\u0027 -ErrorAction Stop).Start_ShowClassicMode; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_start_bing",
-        "name":  "DISABLE START MENU BING SEARCH",
-        "description":  "Removes Bing web search results from the Start Menu search.",
-        "script_on":  "explorer/startbing_off.bat",
-        "script_off":  "explorer/startbing_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v DisableSearchBoxSuggestions /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer\u0027 -Name \u0027DisableSearchBoxSuggestions\u0027 -ErrorAction Stop).DisableSearchBoxSuggestions; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_start_recommendations",
-        "name":  "DISABLE START MENU RECOMMENDATIONS",
-        "description":  "Hides recommended apps, files, and websites from the Start Menu.",
-        "script_on":  "explorer/startrec_off.bat",
-        "script_off":  "explorer/startrec_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_IrrelevantAppsLine /t REG_DWORD /d 0 /f \u0026\u0026 reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_ShowRecentApps /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027Start_ShowRecentApps\u0027 -ErrorAction Stop).Start_ShowRecentApps; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "enable_dark_theme",
-        "name":  "ENABLE DARK THEME",
-        "description":  "Applies the dark theme to apps and Windows system UI.",
-        "script_on":  "explorer/darktheme_on.bat",
-        "script_off":  "explorer/darktheme_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v AppsUseLightTheme /t REG_DWORD /d 0 /f \u0026\u0026 reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v SystemUsesLightTheme /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\u0027 -Name \u0027AppsUseLightTheme\u0027 -ErrorAction Stop).AppsUseLightTheme; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "set_taskbar_left",
-        "name":  "SET TASKBAR ICONS LEFT",
-        "description":  "Aligns taskbar icons to the left instead of center (Windows 11).",
-        "script_on":  "explorer/taskbarleft_on.bat",
-        "script_off":  "explorer/taskbarleft_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v TaskbarAl /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027TaskbarAl\u0027 -ErrorAction Stop).TaskbarAl; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "hide_taskbar_search",
-        "name":  "HIDE TASKBAR SEARCH ICON",
-        "description":  "Removes the search icon/box from the taskbar.",
-        "script_on":  "explorer/taskbarsearch_off.bat",
-        "script_off":  "explorer/taskbarsearch_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Search\" /v SearchboxTaskbarMode /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Search\u0027 -Name \u0027SearchboxTaskbarMode\u0027 -ErrorAction Stop).SearchboxTaskbarMode; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "hide_taskbar_taskview",
-        "name":  "HIDE TASKBAR TASK VIEW ICON",
-        "description":  "Removes the Task View button from the taskbar.",
-        "script_on":  "explorer/taskbartaskview_off.bat",
-        "script_off":  "explorer/taskbartaskview_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v ShowTaskViewButton /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\u0027 -Name \u0027ShowTaskViewButton\u0027 -ErrorAction Stop).ShowTaskViewButton; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "enable_numlock",
-        "name":  "ENABLE NUM LOCK ON STARTUP",
-        "description":  "Turns on Num Lock automatically when Windows starts.",
-        "script_on":  "explorer/numlock_on.bat",
-        "script_off":  "explorer/numlock_off.bat",
-        "command":  "reg add \"HKCU\\Control Panel\\Keyboard\" /v InitialKeyboardIndicators /t REG_SZ /d 2 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Control Panel\\Keyboard\u0027 -Name \u0027InitialKeyboardIndicators\u0027 -ErrorAction Stop).InitialKeyboardIndicators; if ($v -eq \u00272\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "enable_scrollbars",
-        "name":  "ENABLE SCROLLBARS ALWAYS VISIBLE",
-        "description":  "Shows scrollbars permanently instead of hiding them when not active.",
-        "script_on":  "explorer/scrollbars_on.bat",
-        "script_off":  "explorer/scrollbars_off.bat",
-        "command":  "reg add \"HKCU\\Control Panel\\Accessibility\" /v DynamicScrollbars /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Control Panel\\Accessibility\u0027 -Name \u0027DynamicScrollbars\u0027 -ErrorAction Stop).DynamicScrollbars; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_sticky_keys",
-        "name":  "DISABLE STICKY KEYS",
-        "description":  "Disables Sticky Keys popup that appears when pressing Shift repeatedly.",
-        "script_on":  "explorer/stickykeys_off.bat",
-        "script_off":  "explorer/stickykeys_on.bat",
-        "command":  "reg add \"HKCU\\Control Panel\\Accessibility\\StickyKeys\" /v Flags /t REG_SZ /d 506 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Control Panel\\Accessibility\\StickyKeys\u0027 -Name \u0027Flags\u0027 -ErrorAction Stop).Flags; if ($v -eq \u0027506\u0027) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "enable_battery_pct",
-        "name":  "ENABLE BATTERY PERCENTAGE",
-        "description":  "Shows battery percentage in the system tray icon.",
-        "script_on":  "explorer/batterypct_on.bat",
-        "script_off":  "explorer/batterypct_off.bat",
-        "command":  "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\" /v ShowBatteryPercentage /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\u0027 -Name \u0027ShowBatteryPercentage\u0027 -ErrorAction Stop).ShowBatteryPercentage; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_cortana",
-        "name":  "DISABLE CORTANA",
-        "description":  "Disables Microsoft\u0027s digital assistant service and voice-activated background processes.",
-        "script_on":  "windows/cortana_off.bat",
-        "script_off":  "windows/cortana_on.bat",
-        "command":  "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Windows Search\" /v AllowCortana /t REG_DWORD /d 0 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKLM:\\Software\\Policies\\Microsoft\\Windows\\Windows Search\u0027 -Name \u0027AllowCortana\u0027 -ErrorAction Stop).\u0027AllowCortana\u0027; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-    },
-    {
-        "id":  "disable_action_center",
-        "name":  "DISABLE ACTION CENTER",
-        "description":  "Disables the notification action center and quick settings panel on the taskbar.",
-        "script_on":  "windows/actioncenter_off.bat",
-        "script_off":  "windows/actioncenter_on.bat",
-        "command":  "reg add \"HKCU\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v DisableNotificationCenter /t REG_DWORD /d 1 /f",
-        "default_state":  false,
-        "check":  "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path \u0027HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer\u0027 -Name \u0027DisableNotificationCenter\u0027 -ErrorAction Stop).\u0027DisableNotificationCenter\u0027; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+        "id": "disable_telemetry",
+        "name": "DISABLE TELEMETRY",
+        "description": "Disables Windows telemetry and diagnostic data collection.",
+        "script_on": "windows/telemetry_off.bat",
+        "script_off": "windows/telemetry_on.bat",
+        "command": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v AllowTelemetry /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Policies\\Microsoft\\Windows\\DataCollection' -Name 'AllowTelemetry' -ErrorAction Stop).AllowTelemetry; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_actioncenter",
+        "name": "DISABLE ACTIONCENTER",
+        "description": "Disables the Action Center notification panel.",
+        "script_on": "windows/actioncenter_off.bat",
+        "script_off": "windows/actioncenter_on.bat",
+        "command": "reg add \"HKCU\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v DisableNotificationCenter /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer' -Name 'DisableNotificationCenter' -ErrorAction Stop).DisableNotificationCenter; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_background",
+        "name": "DISABLE BACKGROUND",
+        "description": "Disables background app access globally.",
+        "script_on": "windows/background_off.bat",
+        "script_off": "windows/background_on.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications\" /v GlobalUserDisabled /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications' -Name 'GlobalUserDisabled' -ErrorAction Stop).GlobalUserDisabled; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_cortana",
+        "name": "DISABLE CORTANA",
+        "description": "Disables Cortana and search assistant.",
+        "script_on": "windows/cortana_off.bat",
+        "script_off": "windows/cortana_on.bat",
+        "command": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Windows Search\" /v AllowCortana /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Policies\\Microsoft\\Windows\\Windows Search' -Name 'AllowCortana' -ErrorAction Stop).AllowCortana; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_defender",
+        "name": "DISABLE DEFENDER",
+        "description": "Disables Windows Defender anti-spyware and real-time protection.",
+        "script_on": "windows/defender_off.bat",
+        "script_off": "windows/defender_on.bat",
+        "command": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\" /v DisableAntiSpyware /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Policies\\Microsoft\\Windows Defender' -Name 'DisableAntiSpyware' -ErrorAction Stop).DisableAntiSpyware; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_extensions",
+        "name": "DISABLE EXTENSIONS",
+        "description": "Hides file extensions in Windows Explorer.",
+        "script_on": "windows/extensions_off.bat",
+        "script_off": "windows/extensions_on.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v HideFileExt /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'HideFileExt' -ErrorAction Stop).HideFileExt; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_firewall",
+        "name": "DISABLE FIREWALL",
+        "description": "Disables the Windows Defender Firewall on all profiles.",
+        "script_on": "windows/firewall_off.bat",
+        "script_off": "windows/firewall_on.bat",
+        "command": "netsh advfirewall set allprofiles state off",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $p = Get-NetFirewallProfile -ErrorAction Stop; if (($p | Where-Object { $_.Enabled -eq $true }).Count -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_hibernate",
+        "name": "DISABLE HIBERNATE",
+        "description": "Disables hibernation and removes the hiberfil.",
+        "script_on": "windows/hibernate_off.bat",
+        "script_off": "windows/hibernate_on.bat",
+        "command": "powercfg /h off",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Power' -Name 'HibernateEnabled' -ErrorAction Stop).HibernateEnabled; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_hidden",
+        "name": "DISABLE HIDDEN",
+        "description": "Hides hidden and system files in Explorer.",
+        "script_on": "windows/hidden_off.bat",
+        "script_off": "windows/hidden_on.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Hidden /t REG_DWORD /d 2 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'Hidden' -ErrorAction Stop).Hidden; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_remote",
+        "name": "DISABLE REMOTE",
+        "description": "Disables Remote Desktop and terminal server connections.",
+        "script_on": "windows/remote_off.bat",
+        "script_off": "windows/remote_on.bat",
+        "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Terminal Server\" /v fDenyTSConnections /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -Name 'fDenyTSConnections' -ErrorAction Stop).fDenyTSConnections; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_restore",
+        "name": "DISABLE RESTORE",
+        "description": "Disables System Restore to save disk space.",
+        "script_on": "windows/restore_off.bat",
+        "script_off": "windows/restore_on.bat",
+        "command": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\SystemRestore\" /v DisableSR /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Policies\\Microsoft\\Windows NT\\SystemRestore' -Name 'DisableSR' -ErrorAction Stop).DisableSR; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_search",
+        "name": "DISABLE SEARCH",
+        "description": "Disables the Windows Search indexing service.",
+        "script_on": "windows/search_off.bat",
+        "script_off": "windows/search_on.bat",
+        "command": "sc config WSearch start=disabled",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $s = Get-Service -Name 'WSearch' -ErrorAction Stop; if ($s.StartType -eq 'Disabled') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_sleep",
+        "name": "DISABLE SLEEP",
+        "description": "Disables sleep and standby timeouts on AC power.",
+        "script_on": "windows/sleep_off.bat",
+        "script_off": "windows/sleep_on.bat",
+        "command": "powercfg /change standby-timeout-ac 0",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $out = powercfg /query SCHEME_CURRENT SUB_SLEEP STANDBYIDLE; if ($out -match 'Current AC Power Setting Index: 0x00000000') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_storeauto",
+        "name": "DISABLE STOREAUTO",
+        "description": "Disables automatic Microsoft Store app updates.",
+        "script_on": "windows/storeauto_off.bat",
+        "script_off": "windows/storeauto_on.bat",
+        "command": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsStore\" /v AutoDownload /t REG_DWORD /d 2 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Policies\\Microsoft\\WindowsStore' -Name 'AutoDownload' -ErrorAction Stop).AutoDownload; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_xbox",
+        "name": "DISABLE XBOX",
+        "description": "Disables Xbox background services.",
+        "script_on": "windows/xbox_off.bat",
+        "script_off": "windows/xbox_on.bat",
+        "command": "sc config XboxGipSvc start=disabled",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $s = Get-Service -Name 'XboxGipSvc' -ErrorAction Stop; if ($s.StartType -eq 'Disabled') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "high_performance",
+        "name": "HIGH PERFORMANCE",
+        "description": "Activates the High Performance power plan.",
+        "script_on": "cpu/high_perf_on.bat",
+        "script_off": "cpu/high_perf_off.bat",
+        "command": "powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $out = powercfg /getactivescheme; if ($out -match '8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_cstates",
+        "name": "DISABLE CSTATES",
+        "description": "Disables CPU C-states for maximum performance.",
+        "script_on": "cpu/cstate_off.bat",
+        "script_off": "cpu/cstate_on.bat",
+        "command": "powercfg -setacvalueindex 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c SUB_PROCESSOR CPMINCORES 100",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"$out = powercfg /qh 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c SUB_PROCESSOR 0cc5b647-c1df-4637-891a-dec35c318583 2>&1; if ($out -match 'Current AC Power Setting Index: 0x00000064') { exit 0 } else { exit 1 }\""
+    },
+    {
+        "id": "processor_priority",
+        "name": "PROCESSOR PRIORITY",
+        "description": "Sets processor scheduling to prioritize foreground programs.",
+        "script_on": "cpu/priority_off.bat",
+        "script_off": "cpu/priority_on.bat",
+        "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\PriorityControl\" /v Win32PrioritySeparation /t REG_DWORD /d 2 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\PriorityControl' -Name 'Win32PrioritySeparation' -ErrorAction Stop).Win32PrioritySeparation; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_core_parking",
+        "name": "DISABLE CORE PARKING",
+        "description": "Disables CPU core parking for consistent performance.",
+        "script_on": "cpu/parking_off.bat",
+        "script_off": "cpu/parking_on.bat",
+        "command": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR CPMINCORES 100",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"$out = powercfg /qh SCHEME_CURRENT SUB_PROCESSOR 0cc5b647-c1df-4637-891a-dec35c318583 2>&1; if ($out -match 'Current AC Power Setting Index: 0x00000064') { exit 0 } else { exit 1 }\""
+    },
+    {
+        "id": "disable_boost",
+        "name": "DISABLE BOOST",
+        "description": "Disables CPU turbo boost for stable clocks.",
+        "script_on": "cpu/boost_off.bat",
+        "script_off": "cpu/boost_on.bat",
+        "command": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PERFBOOSTMODE 0",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"$out = powercfg /qh SCHEME_CURRENT SUB_PROCESSOR be337238-0d82-4146-a960-4f3749d470c7 2>&1; if ($out -match 'Current AC Power Setting Index: 0x00000000') { exit 0 } else { exit 1 }\""
+    },
+    {
+        "id": "disable_cooling",
+        "name": "DISABLE COOLING",
+        "description": "Disables active processor cooling policy.",
+        "script_on": "cpu/cooling_off.bat",
+        "script_off": "cpu/cooling_on.bat",
+        "command": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR SYSCOOLPOL 1",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $out = powercfg /query SCHEME_CURRENT SUB_PROCESSOR SYSCOOLPOL; if ($out -match 'Current AC Power Setting Index: 0x00000001') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_hetero",
+        "name": "DISABLE HETERO",
+        "description": "Disables heterogeneous CPU scheduling.",
+        "script_on": "cpu/hetero_off.bat",
+        "script_off": "cpu/hetero_on.bat",
+        "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\kernel\" /v HeteroScheduling /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Session Manager\\kernel' -Name 'HeteroScheduling' -ErrorAction Stop).HeteroScheduling; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_idle",
+        "name": "DISABLE IDLE",
+        "description": "Disables CPU idle states for reduced latency.",
+        "script_on": "cpu/idle_off.bat",
+        "script_off": "cpu/idle_on.bat",
+        "command": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR IDLEDISABLE 1",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"$out = powercfg /qh SCHEME_CURRENT SUB_PROCESSOR 5d76a2ca-e8c0-402f-a133-2158492d58ad 2>&1; if ($out -match 'Current AC Power Setting Index: 0x00000001') { exit 0 } else { exit 1 }\""
+    },
+    {
+        "id": "disable_maxstate",
+        "name": "DISABLE MAXSTATE",
+        "description": "Sets CPU maximum throttle state to 100%.",
+        "script_on": "cpu/maxstate_off.bat",
+        "script_off": "cpu/maxstate_on.bat",
+        "command": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMAX 100",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $out = powercfg /query SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMAX; if ($out -match 'Current AC Power Setting Index: 0x00000064') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_minstate",
+        "name": "DISABLE MINSTATE",
+        "description": "Sets CPU minimum throttle state to 100%.",
+        "script_on": "cpu/minstate_off.bat",
+        "script_off": "cpu/minstate_on.bat",
+        "command": "powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMIN 100",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $out = powercfg /query SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMIN; if ($out -match 'Current AC Power Setting Index: 0x00000064') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_mitigations",
+        "name": "DISABLE MITIGATIONS",
+        "description": "Disables Spectre and Meltdown CPU mitigations.",
+        "script_on": "cpu/mitigations_off.bat",
+        "script_off": "cpu/mitigations_on.bat",
+        "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management\" /v FeatureSettingsOverride /t REG_DWORD /d 3 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Session Manager\\Memory Management' -Name 'FeatureSettingsOverride' -ErrorAction Stop).FeatureSettingsOverride; if ($v -eq 3) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_pwrthrottle",
+        "name": "DISABLE PWRTHROTTLE",
+        "description": "Disables Windows power throttling on apps.",
+        "script_on": "cpu/pwrthrottle_off.bat",
+        "script_off": "cpu/pwrthrottle_on.bat",
+        "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Power\\PowerThrottling\" /v PowerThrottlingOff /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Power\\PowerThrottling' -Name 'PowerThrottlingOff' -ErrorAction Stop).PowerThrottlingOff; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_virt",
+        "name": "DISABLE VIRT",
+        "description": "Disables virtualization-based security.",
+        "script_on": "cpu/virt_off.bat",
+        "script_off": "cpu/virt_on.bat",
+        "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\DeviceGuard\" /v EnableVirtualizationBasedSecurity /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\DeviceGuard' -Name 'EnableVirtualizationBasedSecurity' -ErrorAction Stop).EnableVirtualizationBasedSecurity; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_sechealth",
+        "name": "DISABLE SECHEALTH",
+        "description": "Disables the Windows Security Health service.",
+        "script_on": "others/sechealth_off.bat",
+        "script_off": "others/sechealth_on.bat",
+        "command": "sc config SecurityHealthService start=disabled",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $s = Get-Service -Name 'SecurityHealthService' -ErrorAction Stop; if ($s.StartType -eq 'Disabled') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_speech",
+        "name": "DISABLE SPEECH",
+        "description": "Disables online speech privacy and data collection.",
+        "script_on": "others/speech_off.bat",
+        "script_off": "others/speech_on.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Speech_OneCore\\Settings\\OnlineSpeechPrivacy\" /v HasAccepted /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Speech_OneCore\\Settings\\OnlineSpeechPrivacy' -Name 'HasAccepted' -ErrorAction Stop).HasAccepted; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_copilot",
+        "name": "DISABLE COPILOT",
+        "description": "Disables Windows Copilot AI assistant.",
+        "script_on": "win11/copilot_on.bat",
+        "script_off": "win11/copilot_off.bat",
+        "command": "reg add \"HKCU\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot\" /v TurnOffWindowsCopilot /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot' -Name 'TurnOffWindowsCopilot' -ErrorAction Stop).TurnOffWindowsCopilot; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_recall",
+        "name": "DISABLE RECALL",
+        "description": "Disables Windows Recall AI snapshot and analysis feature.",
+        "script_on": "win11/recall_on.bat",
+        "script_off": "win11/recall_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows AI\" /v DisableAIDataAnalysis /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows AI' -Name 'DisableAIDataAnalysis' -ErrorAction Stop).DisableAIDataAnalysis; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_widgets_win11",
+        "name": "DISABLE WIDGETS WIN11",
+        "description": "Disables Windows 11 widgets via policy.",
+        "script_on": "win11/widgets_win11_on.bat",
+        "script_off": "win11/widgets_win11_off.bat",
+        "command": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Dsh\" /v AllowNewsAndInterests /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Policies\\Microsoft\\Dsh' -Name 'AllowNewsAndInterests' -ErrorAction Stop).AllowNewsAndInterests; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_edge_bg_win11",
+        "name": "DISABLE EDGE BACKGROUND WIN11",
+        "description": "Prevents Microsoft Edge from running background processes.",
+        "script_on": "win11/edge_win11_on.bat",
+        "script_off": "win11/edge_win11_off.bat",
+        "command": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Edge\" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Policies\\Microsoft\\Edge' -Name 'BackgroundModeEnabled' -ErrorAction Stop).BackgroundModeEnabled; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_onedrive_win11",
+        "name": "DISABLE ONEDRIVE WIN11",
+        "description": "Disables OneDrive sync via registry.",
+        "script_on": "win11/onedrive_win11_on.bat",
+        "script_off": "win11/onedrive_win11_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\OneDrive\" /v DisableFileSyncNGSC /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\OneDrive' -Name 'DisableFileSyncNGSC' -ErrorAction Stop).DisableFileSyncNGSC; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "remove_teams",
+        "name": "REMOVE TEAMS",
+        "description": "Removes the Microsoft Teams app package.",
+        "script_on": "win11/teams_on.bat",
+        "script_off": "win11/teams_off.bat",
+        "command": "powershell -NoProfile -Command \"Get-AppxPackage *Teams* | Remove-AppxPackage\"",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $p = Get-AppxPackage *Teams* -ErrorAction SilentlyContinue; if (-not $p) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "remove_phone_link",
+        "name": "REMOVE PHONE LINK",
+        "description": "Removes the Phone Link (Your Phone) app package.",
+        "script_on": "win11/phone_link_on.bat",
+        "script_off": "win11/phone_link_off.bat",
+        "command": "powershell -NoProfile -Command \"Get-AppxPackage *YourPhone* | Remove-AppxPackage\"",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $p = Get-AppxPackage *YourPhone* -ErrorAction SilentlyContinue; if (-not $p) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_spotlight",
+        "name": "DISABLE SPOTLIGHT",
+        "description": "Disables Windows Spotlight on the lock screen.",
+        "script_on": "win11/spotlight_on.bat",
+        "script_off": "win11/spotlight_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v RotatingLockScreenEnabled /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager' -Name 'RotatingLockScreenEnabled' -ErrorAction Stop).RotatingLockScreenEnabled; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_suggested_content",
+        "name": "DISABLE SUGGESTED CONTENT",
+        "description": "Disables suggested content and tips in Settings.",
+        "script_on": "win11/suggested_content_on.bat",
+        "script_off": "win11/suggested_content_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v SubscribedContent-338393Enabled /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager' -Name 'SubscribedContent-338393Enabled' -ErrorAction Stop).'SubscribedContent-338393Enabled'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_stickers",
+        "name": "DISABLE STICKERS",
+        "description": "Disables desktop stickers feature.",
+        "script_on": "win11/stickers_on.bat",
+        "script_off": "win11/stickers_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\Stickers\" /v EnableStickers /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\PolicyManager\\current\\device\\Stickers' -Name 'EnableStickers' -ErrorAction Stop).EnableStickers; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_tabs_explorer",
+        "name": "DISABLE TABS EXPLORER",
+        "description": "Disables tabs in File Explorer and uses separate windows.",
+        "script_on": "win11/tabs_explorer_on.bat",
+        "script_off": "win11/tabs_explorer_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v SeparateProcess /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'SeparateProcess' -ErrorAction Stop).SeparateProcess; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "remove_chat",
+        "name": "REMOVE CHAT",
+        "description": "Removes the Teams Chat icon from the taskbar.",
+        "script_on": "win11/chat_on.bat",
+        "script_off": "win11/chat_off.bat",
+        "command": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Windows Chat\" /v ChatIcon /t REG_DWORD /d 3 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\Software\\Policies\\Microsoft\\Windows\\Windows Chat' -Name 'ChatIcon' -ErrorAction Stop).ChatIcon; if ($v -eq 3) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "remove_dev_home",
+        "name": "REMOVE DEV HOME",
+        "description": "Removes the Dev Home application package.",
+        "script_on": "win11/dev_home_on.bat",
+        "script_off": "win11/dev_home_off.bat",
+        "command": "powershell -NoProfile -Command \"Get-AppxPackage *DevHome* | Remove-AppxPackage\"",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $p = Get-AppxPackage *DevHome* -ErrorAction SilentlyContinue; if (-not $p) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_co_creator",
+        "name": "DISABLE CO CREATOR",
+        "description": "Disables Windows Co-Creator and Paint AI features.",
+        "script_on": "win11/co_creator_on.bat",
+        "script_off": "win11/co_creator_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager\" /v SubscribedContent-353698Enabled /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager' -Name 'SubscribedContent-353698Enabled' -ErrorAction Stop).'SubscribedContent-353698Enabled'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "enable_compact_mode",
+        "name": "ENABLE COMPACT MODE",
+        "description": "Enables compact spacing in File Explorer.",
+        "script_on": "win11/compact_mode_on.bat",
+        "script_off": "win11/compact_mode_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v UseCompactMode /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'UseCompactMode' -ErrorAction Stop).UseCompactMode; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "left_align_taskbar_win11",
+        "name": "LEFT ALIGN TASKBAR WIN11",
+        "description": "Aligns the Windows 11 taskbar to the left.",
+        "script_on": "win11/taskbar_align_on.bat",
+        "script_off": "win11/taskbar_align_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v TaskbarAl /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'TaskbarAl' -ErrorAction Stop).TaskbarAl; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_start_recommended",
+        "name": "DISABLE START RECOMMENDED",
+        "description": "Disables recommended section in the Start Menu.",
+        "script_on": "win11/start_recommended_on.bat",
+        "script_off": "win11/start_recommended_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_IrisRecommendations /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'Start_IrisRecommendations' -ErrorAction Stop).Start_IrisRecommendations; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_snap_layouts",
+        "name": "DISABLE SNAP LAYOUTS",
+        "description": "Disables the snap layouts flyout when hovering over maximize.",
+        "script_on": "win11/snap_layouts_on.bat",
+        "script_off": "win11/snap_layouts_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v EnableSnapAssistFlyout /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'EnableSnapAssistFlyout' -ErrorAction Stop).EnableSnapAssistFlyout; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_search_highlights",
+        "name": "DISABLE SEARCH HIGHLIGHTS",
+        "description": "Disables dynamic search highlights and daily content in search.",
+        "script_on": "win11/search_highlights_on.bat",
+        "script_off": "win11/search_highlights_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings\" /v IsDynamicSearchBoxEnabled /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings' -Name 'IsDynamicSearchBoxEnabled' -ErrorAction Stop).IsDynamicSearchBoxEnabled; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_animations",
+        "name": "DISABLE ANIMATIONS",
+        "description": "Turns off window minimize/maximize animations and taskbar thumbnail previews.",
+        "script_on": "visuals/animations_off.bat",
+        "script_off": "visuals/animations_on.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v TaskbarAnimations /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'TaskbarAnimations' -ErrorAction Stop).'TaskbarAnimations'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_transparency",
+        "name": "DISABLE TRANSPARENCY",
+        "description": "Disables acrylic blur effects on taskbar, action center, and title bars.",
+        "script_on": "visuals/transparency_off.bat",
+        "script_off": "visuals/transparency_on.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v EnableTransparency /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize' -Name 'EnableTransparency' -ErrorAction Stop).'EnableTransparency'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_shadows",
+        "name": "DISABLE WINDOW SHADOWS",
+        "description": "Removes drop shadows beneath application windows and dialog boxes.",
+        "script_on": "visuals/shadows_off.bat",
+        "script_off": "visuals/shadows_on.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v VisualFXSetting /t REG_DWORD /d 2 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'VisualFXSetting' -ErrorAction Stop).'VisualFXSetting'; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_snap",
+        "name": "DISABLE WINDOW SNAP",
+        "description": "Disables automatic window snapping, docking, and tiling behavior.",
+        "script_on": "visuals/snap_off.bat",
+        "script_off": "visuals/snap_on.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v SnapAssist /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'SnapAssist' -ErrorAction Stop).'SnapAssist'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "performance_mode",
+        "name": "PERFORMANCE MODE",
+        "description": "Adjusts system visual settings for maximum performance over appearance.",
+        "script_on": "visuals/performance_on.bat",
+        "script_off": "visuals/performance_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects\" /v VisualFXSetting /t REG_DWORD /d 2 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects' -Name 'VisualFXSetting' -ErrorAction Stop).'VisualFXSetting'; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_thumb_preview",
+        "name": "DISABLE THUMBNAIL PREVIEW",
+        "description": "Disables taskbar thumbnail previews when hovering over running applications.",
+        "script_on": "visuals/thumb_off.bat",
+        "script_off": "visuals/thumb_on.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v ExtendedUIHoverTime /t REG_DWORD /d 30000 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'ExtendedUIHoverTime' -ErrorAction Stop).'ExtendedUIHoverTime'; if ($v -eq 30000) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_aero_peek",
+        "name": "DISABLE AERO PEEK",
+        "description": "Disables Aero Peek desktop preview when hovering over the show desktop button.",
+        "script_on": "visuals/aeropeek_off.bat",
+        "script_off": "visuals/aeropeek_on.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\DWM\" /v EnableAeroPeek /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\DWM' -Name 'EnableAeroPeek' -ErrorAction Stop).'EnableAeroPeek'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_menu_anim",
+        "name": "DISABLE MENU ANIMATIONS",
+        "description": "Turns off fade and slide animations for context menus and dropdowns.",
+        "script_on": "visuals/menu_off.bat",
+        "script_off": "visuals/menu_on.bat",
+        "command": "reg add \"HKCU\\Control Panel\\Desktop\" /v MenuShowDelay /t REG_SZ /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'MenuShowDelay' -ErrorAction Stop).MenuShowDelay; if ($v -eq '0') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_combo_anim",
+        "name": "DISABLE COMBOBOX ANIMATION",
+        "description": "Disables open/close animation effects in combo box selection controls.",
+        "script_on": "visuals/combo_off.bat",
+        "script_off": "visuals/combo_on.bat",
+        "command": "reg add \"HKCU\\Control Panel\\Desktop\" /v ComboBoxAnimation /t REG_SZ /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'ComboBoxAnimation' -ErrorAction Stop).ComboBoxAnimation; if ($v -eq '0') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_tooltip_anim",
+        "name": "DISABLE TOOLTIP ANIMATION",
+        "description": "Disables fade-in animation effects for system tooltip popups.",
+        "script_on": "visuals/tooltip_off.bat",
+        "script_off": "visuals/tooltip_on.bat",
+        "command": "reg add \"HKCU\\Control Panel\\Desktop\" /v UserPreferencesMask /t REG_BINARY /d 9032078010000000 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'UserPreferencesMask' -ErrorAction Stop).UserPreferencesMask; if ($v -eq [byte[]]@(0x90,0x32,0x07,0x80,0x10,0x00,0x00,0x00)) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_cursor_shadow",
+        "name": "DISABLE CURSOR SHADOW",
+        "description": "Removes the drop shadow rendered beneath the mouse cursor pointer.",
+        "script_on": "visuals/cursor_off.bat",
+        "script_off": "visuals/cursor_on.bat",
+        "command": "reg add \"HKCU\\Control Panel\\Desktop\" /v UserPreferencesMask /t REG_BINARY /d d032078010000000 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'UserPreferencesMask' -ErrorAction Stop).UserPreferencesMask; if ($v -eq [byte[]]@(0xd0,0x32,0x07,0x80,0x10,0x00,0x00,0x00)) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_listbox_smooth",
+        "name": "DISABLE LISTBOX SMOOTH SCROLL",
+        "description": "Disables smooth scrolling animation in list boxes for instant response.",
+        "script_on": "visuals/listbox_off.bat",
+        "script_off": "visuals/listbox_on.bat",
+        "command": "reg add \"HKCU\\Control Panel\\Desktop\" /v SmoothScroll /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'SmoothScroll' -ErrorAction Stop).'SmoothScroll'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_font_smoothing",
+        "name": "DISABLE FONT SMOOTHING",
+        "description": "Disables ClearType font smoothing for sharper text at the cost of aliasing.",
+        "script_on": "visuals/fontsmooth_off.bat",
+        "script_off": "visuals/fontsmooth_on.bat",
+        "command": "reg add \"HKCU\\Control Panel\\Desktop\" /v FontSmoothing /t REG_SZ /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop' -Name 'FontSmoothing' -ErrorAction Stop).FontSmoothing; if ($v -eq '0') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_taskbar_glow",
+        "name": "DISABLE TASKBAR GLOW",
+        "description": "Disables glowing highlight effects on taskbar buttons when applications are active.",
+        "script_on": "visuals/taskglow_off.bat",
+        "script_off": "visuals/taskglow_on.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v TaskbarGlowLevel /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'TaskbarGlowLevel' -ErrorAction Stop).'TaskbarGlowLevel'; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_window_border",
+        "name": "DISABLE WINDOW BORDER SHADOW",
+        "description": "Removes the 1px border shadow drawn around active windows.",
+        "script_on": "visuals/border_off.bat",
+        "script_off": "visuals/border_on.bat",
+        "command": "reg add \"HKCU\\Control Panel\\Desktop\\WindowMetrics\" /v BorderWidth /t REG_SZ /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Desktop\\WindowMetrics' -Name 'BorderWidth' -ErrorAction Stop).BorderWidth; if ($v -eq '0') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "best_performance",
+        "name": "SET VISUAL EFFECTS TO BEST PERFORMANCE",
+        "description": "Configures Windows for best performance by disabling all visual effects and animations.",
+        "script_on": "visuals/bestperf_on.bat",
+        "script_off": "visuals/bestperf_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects\" /v VisualFXSetting /t REG_DWORD /d 2 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects' -Name 'VisualFXSetting' -ErrorAction Stop).VisualFXSetting; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "enable_end_task",
+        "name": "ENABLE END TASK WITH RIGHT CLICK",
+        "description": "Adds an 'End Task' option to the taskbar right-click context menu.",
+        "script_on": "explorer/endtask_on.bat",
+        "script_off": "explorer/endtask_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings\" /v TaskbarEndTask /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings' -Name 'TaskbarEndTask' -ErrorAction Stop).TaskbarEndTask; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_folder_discovery",
+        "name": "DISABLE AUTOMATIC FOLDER DISCOVERY",
+        "description": "Stops File Explorer from automatically changing folder view types based on contents.",
+        "script_on": "explorer/folderdiscovery_off.bat",
+        "script_off": "explorer/folderdiscovery_on.bat",
+        "command": "reg add \"HKCU\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\Bags\\AllFolders\\Shell\" /v FolderType /t REG_SZ /d NotSpecified /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\Bags\\AllFolders\\Shell' -Name 'FolderType' -ErrorAction Stop).FolderType; if ($v -eq 'NotSpecified') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_home_gallery",
+        "name": "DISABLE FILE EXPLORER HOME & GALLERY",
+        "description": "Hides the Home and Gallery buttons from the File Explorer navigation bar.",
+        "script_on": "explorer/homegallery_off.bat",
+        "script_off": "explorer/homegallery_on.bat",
+        "command": "reg add \"HKCU\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v HideHomeButton /t REG_DWORD /d 1 /f && reg add \"HKCU\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v HideGalleryButton /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer' -Name 'HideHomeButton' -ErrorAction Stop).HideHomeButton; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "enable_classic_menu",
+        "name": "ENABLE RIGHT-CLICK CLASSIC MENU",
+        "description": "Restores the classic Windows 10-style right-click context menu in Windows 11.",
+        "script_on": "explorer/classicmenu_on.bat",
+        "script_off": "explorer/classicmenu_off.bat",
+        "command": "reg add \"HKCU\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32\" /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $k = Get-Item -Path 'HKCU:\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32' -ErrorAction Stop; $v = $k.GetValue(''); if ($v -eq '') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "enable_start_layout",
+        "name": "ENABLE START MENU PREVIOUS LAYOUT",
+        "description": "Restores the classic Start Menu layout on Windows 11.",
+        "script_on": "explorer/startlayout_on.bat",
+        "script_off": "explorer/startlayout_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_ShowClassicMode /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'Start_ShowClassicMode' -ErrorAction Stop).Start_ShowClassicMode; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_start_bing",
+        "name": "DISABLE START MENU BING SEARCH",
+        "description": "Removes Bing web search results from the Start Menu search.",
+        "script_on": "explorer/startbing_off.bat",
+        "script_off": "explorer/startbing_on.bat",
+        "command": "reg add \"HKCU\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v DisableSearchBoxSuggestions /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Policies\\Microsoft\\Windows\\Explorer' -Name 'DisableSearchBoxSuggestions' -ErrorAction Stop).DisableSearchBoxSuggestions; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "enable_dark_theme",
+        "name": "ENABLE DARK THEME",
+        "description": "Applies the dark theme to apps and Windows system UI.",
+        "script_on": "explorer/darktheme_on.bat",
+        "script_off": "explorer/darktheme_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v AppsUseLightTheme /t REG_DWORD /d 0 /f && reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v SystemUsesLightTheme /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize' -Name 'AppsUseLightTheme' -ErrorAction Stop).AppsUseLightTheme; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "set_taskbar_left",
+        "name": "SET TASKBAR ICONS LEFT",
+        "description": "Aligns taskbar icons to the left instead of center (Windows 11).",
+        "script_on": "explorer/taskbarleft_on.bat",
+        "script_off": "explorer/taskbarleft_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v TaskbarAl /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'TaskbarAl' -ErrorAction Stop).TaskbarAl; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "hide_taskbar_search",
+        "name": "HIDE TASKBAR SEARCH ICON",
+        "description": "Removes the search icon/box from the taskbar.",
+        "script_on": "explorer/taskbarsearch_off.bat",
+        "script_off": "explorer/taskbarsearch_on.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Search\" /v SearchboxTaskbarMode /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Search' -Name 'SearchboxTaskbarMode' -ErrorAction Stop).SearchboxTaskbarMode; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "hide_taskbar_taskview",
+        "name": "HIDE TASKBAR TASK VIEW ICON",
+        "description": "Removes the Task View button from the taskbar.",
+        "script_on": "explorer/taskbartaskview_off.bat",
+        "script_off": "explorer/taskbartaskview_on.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v ShowTaskViewButton /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'ShowTaskViewButton' -ErrorAction Stop).ShowTaskViewButton; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "enable_numlock",
+        "name": "ENABLE NUM LOCK ON STARTUP",
+        "description": "Turns on Num Lock automatically when Windows starts.",
+        "script_on": "explorer/numlock_on.bat",
+        "script_off": "explorer/numlock_off.bat",
+        "command": "reg add \"HKCU\\Control Panel\\Keyboard\" /v InitialKeyboardIndicators /t REG_SZ /d 2 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Keyboard' -Name 'InitialKeyboardIndicators' -ErrorAction Stop).InitialKeyboardIndicators; if ($v -eq '2') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "enable_scrollbars",
+        "name": "ENABLE SCROLLBARS ALWAYS VISIBLE",
+        "description": "Shows scrollbars permanently instead of hiding them when not active.",
+        "script_on": "explorer/scrollbars_on.bat",
+        "script_off": "explorer/scrollbars_off.bat",
+        "command": "reg add \"HKCU\\Control Panel\\Accessibility\" /v DynamicScrollbars /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Accessibility' -Name 'DynamicScrollbars' -ErrorAction Stop).DynamicScrollbars; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "disable_sticky_keys",
+        "name": "DISABLE STICKY KEYS",
+        "description": "Disables Sticky Keys popup that appears when pressing Shift repeatedly.",
+        "script_on": "explorer/stickykeys_off.bat",
+        "script_off": "explorer/stickykeys_on.bat",
+        "command": "reg add \"HKCU\\Control Panel\\Accessibility\\StickyKeys\" /v Flags /t REG_SZ /d 506 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Control Panel\\Accessibility\\StickyKeys' -Name 'Flags' -ErrorAction Stop).Flags; if ($v -eq '506') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "enable_battery_pct",
+        "name": "ENABLE BATTERY PERCENTAGE",
+        "description": "Shows battery percentage in the system tray icon.",
+        "script_on": "explorer/batterypct_on.bat",
+        "script_off": "explorer/batterypct_off.bat",
+        "command": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\" /v ShowBatteryPercentage /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer' -Name 'ShowBatteryPercentage' -ErrorAction Stop).ShowBatteryPercentage; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
     }
 ]

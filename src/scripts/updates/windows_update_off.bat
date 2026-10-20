@@ -1,4 +1,5 @@
 @echo off
 sc config wuauserv start= demand
-sc start wuauserv
-exit /b %errorlevel%
+if errorlevel 1 exit /b 1
+sc start wuauserv >nul 2>&1
+exit /b 0

@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ATOM TOOLBOX</title>
 <link rel="stylesheet" href="styles.css">
+<script>
+  // Apply the saved theme before first paint (deep-gray dark is the default)
+  try {
+    var atomTheme = localStorage.getItem('atom-theme');
+    if (atomTheme === 'oled' || atomTheme === 'light') document.documentElement.dataset.theme = atomTheme;
+  } catch (e) {}
+</script>
 </head>
 <body>
 <div id="app">
@@ -18,6 +25,10 @@
       <span class="sep">|</span>
       <span id="os-label">OS: --</span>
     </div>
+    <div id="global-search">
+      <input id="gsearch-input" type="text" placeholder="SEARCH TWEAKS &amp; APPS  [CTRL+K]" spellcheck="false" autocomplete="off">
+      <div id="gsearch-results"></div>
+    </div>
     <div id="window-controls">
       <button class="wc-btn" id="btn-minimize">_</button>
       <button class="wc-btn" id="btn-maximize">[]</button>
@@ -28,25 +39,41 @@
   <main id="layout">
     <nav id="sidebar">
       <div class="nav-group">
-        <div class="nav-group-title">TWEAKS</div>
+        <div class="nav-group-title">SYSTEM</div>
         <button class="nav-item active" data-view="dashboard">DASHBOARD</button>
-        <button class="nav-item" data-view="windows">WINDOWS</button>
-        <button class="nav-item" data-view="power">POWER</button>
-        <button class="nav-item" data-view="gaming">GAMING</button>
-        <button class="nav-item" data-view="network">NETWORK</button>
-        <button class="nav-item" data-view="gpu">GPU</button>
-      </div>
-      <div class="nav-group">
-        <div class="nav-group-title">OTHERS</div>
-        <button class="nav-item" data-view="privacy">PRIVACY SETTINGS</button>
-        <button class="nav-item" data-view="contextmenu">CONTEXT MENU</button>
-        <button class="nav-item" data-view="brave">BRAVE DEBLOATER</button>
-        <button class="nav-item" data-view="cleaner">CLEANER</button>
+        <button class="nav-item" data-view="monitor">BACKGROUND MONITOR</button>
         <button class="nav-item" data-view="shortcuts">SHORTCUTS</button>
       </div>
       <div class="nav-group">
-        <div class="nav-group-title">IMPORTANT</div>
+        <div class="nav-group-title">OPTIMIZATIONS</div>
+        <button class="nav-item" data-view="windows">WINDOWS</button>
+        <button class="nav-item" data-view="gaming">GAMING</button>
+        <button class="nav-item" data-view="gpu">GPU</button>
+        <button class="nav-item" data-view="power">POWER</button>
+        <button class="nav-item" data-view="network">NETWORK</button>
+        <button class="nav-item" data-view="privacy">PRIVACY SETTINGS</button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">TOOLS &amp; UTILITIES</div>
+        <button class="nav-item" data-view="contextmenu">CONTEXT MENU</button>
+        <button class="nav-item" data-view="brave">BRAVE DEBLOATER</button>
+        <button class="nav-item" data-view="cleaner">CLEANER</button>
         <button class="nav-item" data-view="powerplans">POWER PLANS</button>
+        <button class="nav-item" data-view="startup">STARTUP MANAGER</button>
+        <button class="nav-item" data-view="personalize">PERSONALIZE</button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">ADVANCED</div>
+        <button class="nav-item nav-locked" data-locked="advpower">ADVANCED POWER<span class="nav-pro">PRO</span></button>
+        <button class="nav-item nav-locked" data-locked="winupdate">WINDOWS UPDATE<span class="nav-pro">PRO</span></button>
+        <button class="nav-item nav-locked" data-locked="dns">DNS OPTIMIZER<span class="nav-pro">PRO</span></button>
+        <button class="nav-item nav-locked" data-locked="drivers">DRIVER HUB<span class="nav-pro">PRO</span></button>
+        <button class="nav-item nav-cta" data-cta="optimizer">GET ATOM OPTIMIZER &rarr;</button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">MANAGEMENT &amp; SAFETY</div>
+        <button class="nav-item" data-view="backup">BACKUP &amp; RESTORE</button>
         <button class="nav-item" data-view="apps">APP INSTALLER</button>
         <button class="nav-item" data-view="applist">INSTALLED APPS</button>
         <button class="nav-item" data-view="history">HISTORY</button>

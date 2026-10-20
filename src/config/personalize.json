@@ -1,0 +1,191 @@
+[
+    {
+        "id": "tb_tint",
+        "name": "TASKBAR & START ACCENT TINT",
+        "description": "Applies the accent color to the taskbar, Start menu and Action Center (Windows Settings: 'Show accent color on Start, taskbar and action center').",
+        "command_on": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v ColorPrevalence /t REG_DWORD /d 1 /f",
+        "command_off": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize\" /v ColorPrevalence /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize' -Name 'ColorPrevalence' -ErrorAction Stop).ColorPrevalence; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "dwm_tint",
+        "name": "DWM ACCENT MIRROR FLAG",
+        "description": "Mirrors the tint flag into the DWM branch (DWM\\ColorPrevalence) - some apps and the lock screen read this copy instead.",
+        "command_on": "reg add \"HKCU\\Software\\Microsoft\\Windows\\DWM\" /v ColorPrevalence /t REG_DWORD /d 1 /f",
+        "command_off": "reg add \"HKCU\\Software\\Microsoft\\Windows\\DWM\" /v ColorPrevalence /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\DWM' -Name 'ColorPrevalence' -ErrorAction Stop).ColorPrevalence; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "accent_blue",
+        "name": "ACCENT COLOR: WINDOWS BLUE",
+        "description": "Stock Windows blue (#0078D7). Restores the exact factory accent values, including the native 8-slot Start palette.",
+        "script_on": "personalize/accent_blue_on.bat",
+        "script_off": "personalize/accent_blue_on.bat",
+        "default_state": true,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\DWM' -Name 'AccentColor' -ErrorAction Stop).AccentColor; if (('{0:X8}' -f ([int64]$v -band 4294967295)) -eq 'FFD77800') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "accent_teal",
+        "name": "ACCENT COLOR: TEAL",
+        "description": "Calm teal (#038387) across taskbar, Start, window borders and UWP app accents. Restarts Explorer so the shell re-tints.",
+        "script_on": "personalize/accent_teal_on.bat",
+        "script_off": "personalize/accent_blue_on.bat",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\DWM' -Name 'AccentColor' -ErrorAction Stop).AccentColor; if (('{0:X8}' -f ([int64]$v -band 4294967295)) -eq 'FF878303') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "accent_green",
+        "name": "ACCENT COLOR: GREEN",
+        "description": "Office-style green (#107C10) across taskbar, Start, window borders and UWP app accents. Restarts Explorer so the shell re-tints.",
+        "script_on": "personalize/accent_green_on.bat",
+        "script_off": "personalize/accent_blue_on.bat",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\DWM' -Name 'AccentColor' -ErrorAction Stop).AccentColor; if (('{0:X8}' -f ([int64]$v -band 4294967295)) -eq 'FF107C10') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "accent_lime",
+        "name": "ACCENT COLOR: LIME",
+        "description": "Xbox-style lime (#7FBA00) across taskbar, Start, window borders and UWP app accents. Restarts Explorer so the shell re-tints.",
+        "script_on": "personalize/accent_lime_on.bat",
+        "script_off": "personalize/accent_blue_on.bat",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\DWM' -Name 'AccentColor' -ErrorAction Stop).AccentColor; if (('{0:X8}' -f ([int64]$v -band 4294967295)) -eq 'FF00BA7F') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "accent_gold",
+        "name": "ACCENT COLOR: GOLD",
+        "description": "Warm gold (#FFB900) across taskbar, Start, window borders and UWP app accents. Restarts Explorer so the shell re-tints.",
+        "script_on": "personalize/accent_gold_on.bat",
+        "script_off": "personalize/accent_blue_on.bat",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\DWM' -Name 'AccentColor' -ErrorAction Stop).AccentColor; if (('{0:X8}' -f ([int64]$v -band 4294967295)) -eq 'FF00B9FF') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "accent_orange",
+        "name": "ACCENT COLOR: ORANGE",
+        "description": "Sunset orange (#CA5010) across taskbar, Start, window borders and UWP app accents. Restarts Explorer so the shell re-tints.",
+        "script_on": "personalize/accent_orange_on.bat",
+        "script_off": "personalize/accent_blue_on.bat",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\DWM' -Name 'AccentColor' -ErrorAction Stop).AccentColor; if (('{0:X8}' -f ([int64]$v -band 4294967295)) -eq 'FF1050CA') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "accent_red",
+        "name": "ACCENT COLOR: RED",
+        "description": "Alarm red (#E81123) across taskbar, Start, window borders and UWP app accents. Restarts Explorer so the shell re-tints.",
+        "script_on": "personalize/accent_red_on.bat",
+        "script_off": "personalize/accent_blue_on.bat",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\DWM' -Name 'AccentColor' -ErrorAction Stop).AccentColor; if (('{0:X8}' -f ([int64]$v -band 4294967295)) -eq 'FF2311E8') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "accent_pink",
+        "name": "ACCENT COLOR: PINK",
+        "description": "Vivid magenta (#E3008C) across taskbar, Start, window borders and UWP app accents. Restarts Explorer so the shell re-tints.",
+        "script_on": "personalize/accent_pink_on.bat",
+        "script_off": "personalize/accent_blue_on.bat",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\DWM' -Name 'AccentColor' -ErrorAction Stop).AccentColor; if (('{0:X8}' -f ([int64]$v -band 4294967295)) -eq 'FF8C00E3') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "accent_purple",
+        "name": "ACCENT COLOR: PURPLE",
+        "description": "Deep purple (#744DA9) across taskbar, Start, window borders and UWP app accents. Restarts Explorer so the shell re-tints.",
+        "script_on": "personalize/accent_purple_on.bat",
+        "script_off": "personalize/accent_blue_on.bat",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\DWM' -Name 'AccentColor' -ErrorAction Stop).AccentColor; if (('{0:X8}' -f ([int64]$v -band 4294967295)) -eq 'FFA94D74') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "accent_gray",
+        "name": "ACCENT COLOR: GRAPHITE",
+        "description": "Stealth graphite (#4C4A48) across taskbar, Start, window borders and UWP app accents. Restarts Explorer so the shell re-tints.",
+        "script_on": "personalize/accent_gray_on.bat",
+        "script_off": "personalize/accent_blue_on.bat",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\DWM' -Name 'AccentColor' -ErrorAction Stop).AccentColor; if (('{0:X8}' -f ([int64]$v -band 4294967295)) -eq 'FF484A4C') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "small_icons",
+        "name": "SMALL TASKBAR BUTTONS",
+        "description": "Uses small icons on the taskbar (Windows needs an Explorer restart to re-layout, which this row does automatically).",
+        "script_on": "personalize/smallicons_on.bat",
+        "script_off": "personalize/smallicons_off.bat",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'TaskbarSmallIcons' -ErrorAction Stop).TaskbarSmallIcons; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "taskbar_no_combine",
+        "name": "TASKBAR: NEVER COMBINE BUTTONS",
+        "description": "Forces each window to get its own taskbar button (TaskbarGlomLevel = 2). OFF returns to 'always combine'.",
+        "command_on": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v TaskbarGlomLevel /t REG_DWORD /d 2 /f",
+        "command_off": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v TaskbarGlomLevel /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'TaskbarGlomLevel' -ErrorAction Stop).TaskbarGlomLevel; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "clock_seconds",
+        "name": "CLOCK WITH SECONDS",
+        "description": "Shows seconds in the taskbar clock. Applies immediately - no restart needed.",
+        "command_on": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v ShowSecondsInSystemClock /t REG_DWORD /d 1 /f",
+        "command_off": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v ShowSecondsInSystemClock /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'ShowSecondsInSystemClock' -ErrorAction Stop).ShowSecondsInSystemClock; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "tray_all_icons",
+        "name": "TRAY: ALWAYS SHOW ALL ICONS",
+        "description": "Keeps every notification-area icon visible instead of hiding new ones behind the overflow arrow (EnableAutoTray = 0).",
+        "command_on": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\" /v EnableAutoTray /t REG_DWORD /d 0 /f",
+        "command_off": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\" /v EnableAutoTray /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer' -Name 'EnableAutoTray' -ErrorAction Stop).EnableAutoTray; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "start_recent",
+        "name": "START: RECENTLY OPENED ITEMS",
+        "description": "Shows recently opened items in Start and on the taskbar jump lists (Start_TrackDocs = 1, Windows default).",
+        "command_on": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_TrackDocs /t REG_DWORD /d 1 /f",
+        "command_off": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_TrackDocs /t REG_DWORD /d 0 /f",
+        "default_state": true,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'Start_TrackDocs' -ErrorAction Stop).Start_TrackDocs; if ($v -eq 0) { exit 1 } else { exit 0 } } catch { exit 0 }\""
+    },
+    {
+        "id": "start_frequent",
+        "name": "START: MOST USED APPS",
+        "description": "Shows your most frequently used apps at the top of the app list (Start_TrackProgs = 1). Turn OFF for a cleaner, static Start.",
+        "command_on": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_TrackProgs /t REG_DWORD /d 1 /f",
+        "command_off": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" /v Start_TrackProgs /t REG_DWORD /d 0 /f",
+        "default_state": true,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'Start_TrackProgs' -ErrorAction Stop).Start_TrackProgs; if ($v -eq 0) { exit 1 } else { exit 0 } } catch { exit 0 }\""
+    },
+    {
+        "id": "desk_thispc",
+        "name": "DESKTOP ICON: THIS PC",
+        "description": "Shows (ON) or hides (OFF) the 'This PC' icon on the desktop. Applies immediately.",
+        "command_on": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel\" /v \"{20D04FE0-3AEA-1069-A2D8-08002B30309D}\" /t REG_DWORD /d 0 /f",
+        "command_off": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel\" /v \"{20D04FE0-3AEA-1069-A2D8-08002B30309D}\" /t REG_DWORD /d 1 /f",
+        "default_state": true,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel' -Name '{20D04FE0-3AEA-1069-A2D8-08002B30309D}' -ErrorAction Stop).'{20D04FE0-3AEA-1069-A2D8-08002B30309D}'; if ($v -eq 1) { exit 1 } else { exit 0 } } catch { exit 0 }\""
+    },
+    {
+        "id": "desk_recyclebin",
+        "name": "DESKTOP ICON: RECYCLE BIN",
+        "description": "Shows (ON) or hides (OFF) the Recycle Bin icon on the desktop. Applies immediately.",
+        "command_on": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel\" /v \"{645FF040-5081-101B-9F08-00AA002F954E}\" /t REG_DWORD /d 0 /f",
+        "command_off": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel\" /v \"{645FF040-5081-101B-9F08-00AA002F954E}\" /t REG_DWORD /d 1 /f",
+        "default_state": true,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel' -Name '{645FF040-5081-101B-9F08-00AA002F954E}' -ErrorAction Stop).'{645FF040-5081-101B-9F08-00AA002F954E}'; if ($v -eq 1) { exit 1 } else { exit 0 } } catch { exit 0 }\""
+    },
+    {
+        "id": "desk_userfiles",
+        "name": "DESKTOP ICON: USER'S FILES",
+        "description": "Shows (ON) or hides (OFF) the hidden 'User's Files' virtual folder icon on the desktop. Applies immediately.",
+        "command_on": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel\" /v \"{59031a47-3f72-44a7-89c5-5595fe6b30ee}\" /t REG_DWORD /d 0 /f",
+        "command_off": "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel\" /v \"{59031a47-3f72-44a7-89c5-5595fe6b30ee}\" /t REG_DWORD /d 1 /f",
+        "default_state": true,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel' -Name '{59031a47-3f72-44a7-89c5-5595fe6b30ee}' -ErrorAction Stop).'{59031a47-3f72-44a7-89c5-5595fe6b30ee}'; if ($v -eq 1) { exit 1 } else { exit 0 } } catch { exit 0 }\""
+    }
+]

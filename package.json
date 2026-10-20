@@ -1,13 +1,26 @@
 {
   "name": "atom-toolbox",
-  "version": "0.1.5",
-  "description": "your way to all windows tweaks",
+  "version": "0.2.0",
+  "private": true,
+  "description": "A Windows 10/11 tweak and system utility toolbox built with Electron.",
+  "license": "MIT",
+  "author": "Project Atom",
+  "copyright": "Copyright © 2026 Project Atom",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ProjectAtomOS/Atom-Tool-Box.git"
+  },
+  "homepage": "https://github.com/ProjectAtomOS/Atom-Tool-Box#readme",
+  "bugs": {
+    "url": "https://github.com/ProjectAtomOS/Atom-Tool-Box/issues"
+  },
   "main": "main.js",
   "scripts": {
     "start": "node ./node_modules/electron/cli.js .",
     "dev": "node ./node_modules/electron/cli.js . --dev",
-    "build": "electron-builder --win nsis",
-    "dist": "electron-builder --win nsis"
+    "check": "node --check main.js && node --check src/renderer.js",
+    "build": "node ./node_modules/electron-builder/cli.js --win nsis",
+    "dist": "node ./node_modules/electron-builder/cli.js --win nsis"
   },
   "build": {
     "appId": "com.projectatom.toolbox",
@@ -40,7 +53,7 @@
       "oneClick": false,
       "perMachine": true,
       "allowToChangeInstallationDirectory": true,
-      "deleteAppDataOnUninstall": true,
+      "deleteAppDataOnUninstall": false,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "AtomToolBox",

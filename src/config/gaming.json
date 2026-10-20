@@ -95,9 +95,9 @@
     "description": "Disables the platform clock for lower timer resolution in games.",
     "script_on": "gaming/optimize_games_on.bat",
     "script_off": "gaming/optimize_games_off.bat",
-    "command": "bcdedit /set useplatformclock false",
+    "command": "bcdedit /set disabledynamictick yes",
     "default_state": false,
-    "check": "powershell -NoProfile -Command \"try { $r = bcdedit /enum {current} 2>&1; if ($r -match 'useplatformclock\\s+No') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    "check": "powershell -NoProfile -Command \"try { $r = bcdedit /enum {current} 2>&1; if ($r -match 'disabledynamictick\\s+Yes') { exit 0 } else { exit 1 } } catch { exit 1 }\""
   },
   {
     "id": "msi_mode",

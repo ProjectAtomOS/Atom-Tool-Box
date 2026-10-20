@@ -1,3 +1,3 @@
 @echo off
-reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v PauseUpdatesExpiryTime /t REG_SZ /d "2099-12-31T23:59:59" /f
+powershell -NoProfile -Command "$s=(Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ'); reg add 'HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings' /v PauseFeatureUpdatesStartTime /t REG_SZ /d $s /f; reg add 'HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings' /v PauseFeatureUpdatesEndTime /t REG_SZ /d '2099-12-31T23:59:59Z' /f; reg add 'HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings' /v PauseQualityUpdatesStartTime /t REG_SZ /d $s /f; reg add 'HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings' /v PauseQualityUpdatesEndTime /t REG_SZ /d '2099-12-31T23:59:59Z' /f; reg add 'HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings' /v PauseUpdatesExpiryTime /t REG_SZ /d '2099-12-31T23:59:59' /f"
 exit /b %errorlevel%

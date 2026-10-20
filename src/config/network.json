@@ -35,9 +35,9 @@
     "description": "Disables Nagle's algorithm for lower TCP latency.",
     "script_on": "network/nagle_off.bat",
     "script_off": "network/nagle_on.bat",
-    "command": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces\" /v TcpAckFrequency /t REG_DWORD /d 1 /f",
+    "command": "powershell -NoProfile -Command \"$keys = Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces'; foreach ($k in $keys) { Set-ItemProperty -Path $k.PSPath -Name 'TcpAckFrequency' -Value 1 -Type DWord -Force }\"",
     "default_state": false,
-    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces' -Name 'TcpAckFrequency' -ErrorAction Stop).TcpAckFrequency; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    "check": "powershell -NoProfile -Command \"$keys = Get-ChildItem 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters\\Interfaces'; if (-not $keys) { exit 1 }; $ok = 1; foreach ($k in $keys) { $v = (Get-ItemProperty -Path $k.PSPath -Name 'TcpAckFrequency' -ErrorAction SilentlyContinue).TcpAckFrequency; if ($v -ne 1) { $ok = 0; break } }; if ($ok -eq 1) { exit 0 } else { exit 1 }\""
   },
   {
     "id": "enable_tcp_nodelay",
@@ -118,15 +118,5 @@
     "command": "netsh int tcp set global timestamps=disabled",
     "default_state": false,
     "check": "powershell -NoProfile -Command \"try { $r = netsh int tcp show global 2>&1; if ($r -match 'Timestamps\\s+:\\s+disabled') { exit 0 } else { exit 1 } } catch { exit 1 }\""
-  },
-  {
-    "id": "disable_heuristics",
-    "name": "DISABLE TCP HEURISTICS",
-    "description": "Disables TCP heuristics for consistent network behavior.",
-    "script_on": "network/heuristics_off.bat",
-    "script_off": "network/heuristics_on.bat",
-    "command": "netsh int tcp set global heuristics=disabled",
-    "default_state": false,
-    "check": "powershell -NoProfile -Command \"try { $r = netsh int tcp show global 2>&1; if ($r -match 'Heuristics\\s+:\\s+disabled') { exit 0 } else { exit 1 } } catch { exit 1 }\""
   }
 ]

@@ -1,1 +1,33 @@
+# Dependencies
 node_modules/
+
+# Build output
+dist/
+out/
+release/
+
+# Generated screenshot gallery
+screenshots/
+
+# QA artifacts
+qa/logs/
+qa/tmp/
+qa/artifacts/
+*.log
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+
+# Archives
+*.zip
+*.7z

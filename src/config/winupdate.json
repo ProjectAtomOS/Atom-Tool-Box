@@ -1,0 +1,192 @@
+[
+    {
+        "id": "wu_no_auto_update",
+        "name": "DISABLE AUTOMATIC UPDATES",
+        "description": "Applies the NoAutoUpdate policy: Windows Update stops downloading and installing updates on its own. Manual checks and installs still work. Fully honored on Pro/Enterprise.",
+        "script_on": "updates/wufb_on.bat",
+        "script_off": "updates/wufb_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoUpdate /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Name 'NoAutoUpdate' -ErrorAction Stop).NoAutoUpdate; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_notify_before_download",
+        "name": "NOTIFY BEFORE DOWNLOAD",
+        "description": "Puts automatic updates into notify-only mode (AUOptions=2): updates are offered, but nothing is downloaded or installed without your approval.",
+        "script_on": "updates/update_notifications_on.bat",
+        "script_off": "updates/update_notifications_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v AUOptions /t REG_DWORD /d 2 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Name 'AUOptions' -ErrorAction Stop).AUOptions; if ($v -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_no_auto_restart",
+        "name": "NO AUTO-RESTART WHILE SIGNED IN",
+        "description": "Blocks automatic restarts for update installation while a user is signed on. Updates can still install, but the restart waits for you.",
+        "script_on": "updates/auto_reboot_on.bat",
+        "script_off": "updates/auto_reboot_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU' -Name 'NoAutoRebootWithLoggedOnUsers' -ErrorAction Stop).NoAutoRebootWithLoggedOnUsers; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_max_active_hours",
+        "name": "MAXIMUM ACTIVE HOURS (00:00-23:00)",
+        "description": "Pins active hours to the whole day (policy) so Windows never restarts for updates while you are working.",
+        "script_on": "updates/active_hours_on.bat",
+        "script_off": "updates/active_hours_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v SetActiveHours /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $k = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU'; $a = (Get-ItemProperty -Path $k -Name 'SetActiveHours' -ErrorAction Stop).SetActiveHours; $s = (Get-ItemProperty -Path $k -Name 'ActiveHoursStart' -ErrorAction Stop).ActiveHoursStart; $e = (Get-ItemProperty -Path $k -Name 'ActiveHoursEnd' -ErrorAction Stop).ActiveHoursEnd; if ($a -eq 1 -and $s -eq 0 -and $e -eq 23) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_defer_features",
+        "name": "DEFER FEATURE UPDATES 365 DAYS",
+        "description": "Delays big Windows version upgrades for up to 365 days via the Update-for-Business policy. Pro/Enterprise feature; ignored on Home.",
+        "script_on": "updates/defer_features_on.bat",
+        "script_off": "updates/defer_features_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v DeferFeatureUpdatesPeriodInDays /t REG_DWORD /d 365 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $k = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate'; $f = (Get-ItemProperty -Path $k -Name 'DeferFeatureUpdates' -ErrorAction Stop).DeferFeatureUpdates; $d = (Get-ItemProperty -Path $k -Name 'DeferFeatureUpdatesPeriodInDays' -ErrorAction Stop).DeferFeatureUpdatesPeriodInDays; if ($f -eq 1 -and $d -eq 365) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_defer_quality",
+        "name": "DEFER QUALITY UPDATES 30 DAYS",
+        "description": "Delays monthly quality/security updates for up to 30 days via the Update-for-Business policy. Pro/Enterprise feature; ignored on Home.",
+        "script_on": "updates/defer_quality_on.bat",
+        "script_off": "updates/defer_quality_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v DeferQualityUpdatesPeriodInDays /t REG_DWORD /d 30 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $k = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate'; $f = (Get-ItemProperty -Path $k -Name 'DeferQualityUpdates' -ErrorAction Stop).DeferQualityUpdates; $d = (Get-ItemProperty -Path $k -Name 'DeferQualityUpdatesPeriodInDays' -ErrorAction Stop).DeferQualityUpdatesPeriodInDays; if ($f -eq 1 -and $d -eq 30) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_target_release",
+        "name": "PIN CURRENT WINDOWS VERSION",
+        "description": "Locks feature updates to the Windows version installed right now (read at apply time). New builds stop being offered until you unpin.",
+        "script_on": "updates/target_release_on.bat",
+        "script_off": "updates/target_release_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v TargetReleaseVersion /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $k = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate'; $t = (Get-ItemProperty -Path $k -Name 'TargetReleaseVersion' -ErrorAction Stop).TargetReleaseVersion; $v = (Get-ItemProperty -Path $k -Name 'TargetReleaseVersionInfo' -ErrorAction Stop).TargetReleaseVersionInfo; $cur = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion').DisplayVersion; if ($t -eq 1 -and $v -eq $cur) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_pause_35d",
+        "name": "PAUSE UPDATES - 35 DAYS",
+        "description": "Native pause: feature and quality updates are suspended for 35 days (timestamps are computed when you apply). Alternative to PAUSE UNTIL 2099 - both share the same pause stamps, so only the one applied last is in effect. Undo removes all pause stamps.",
+        "script_on": "updates/pause35_on.bat",
+        "script_off": "updates/pause35_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings\" /v PauseQualityUpdatesEndTime /t REG_SZ /d \"<now+35d>\" /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $e = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'PauseQualityUpdatesEndTime' -ErrorAction Stop).PauseQualityUpdatesEndTime; $d = [datetime]::Parse($e); $n = Get-Date; if ($d -gt $n -and $d -lt $n.AddDays(60)) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_pause_2099",
+        "name": "PAUSE UPDATES UNTIL 2099",
+        "description": "Sets every pause timestamp to year 2099 - effectively no automatic updates until then. A hard freeze. Alternative to PAUSE 35 DAYS - both share the same pause stamps, so only the one applied last is in effect. Undo removes all pause stamps.",
+        "script_on": "updates/pause_updates_on.bat",
+        "script_off": "updates/pause_updates_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings\" /v PauseUpdatesExpiryTime /t REG_SZ /d \"2099-12-31T23:59:59\" /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'PauseUpdatesExpiryTime' -ErrorAction Stop).PauseUpdatesExpiryTime; if ($v -match '2099') { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_max_pause_window",
+        "name": "EXTEND MAX PAUSE WINDOW (10 YEARS)",
+        "description": "Raises the maximum pause window Windows accepts (FlightSettingsMaxPauseDays=3650). Companion switch for the long pauses above.",
+        "script_on": "updates/maxpause_on.bat",
+        "script_off": "updates/maxpause_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings\" /v FlightSettingsMaxPauseDays /t REG_DWORD /d 3650 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'FlightSettingsMaxPauseDays' -ErrorAction Stop).FlightSettingsMaxPauseDays; if ($v -ge 3650) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_restrict_access",
+        "name": "LOCK WINDOWS UPDATE SETTINGS PAGE",
+        "description": "Applies DisableWindowsUpdateAccess: the Windows Update controls in Settings are hidden/blocked and show managed-by-organization text.",
+        "script_on": "updates/restrict_access_on.bat",
+        "script_off": "updates/restrict_access_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v DisableWindowsUpdateAccess /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'DisableWindowsUpdateAccess' -ErrorAction Stop).DisableWindowsUpdateAccess; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_block_drivers",
+        "name": "BLOCK DRIVER UPDATES VIA WU",
+        "description": "Stops Windows Update from offering driver updates: excludes WU drivers from quality updates and removes WU from the driver search order.",
+        "script_on": "updates/block_drivers_on.bat",
+        "script_off": "updates/block_drivers_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v ExcludeWUDriversInQualityUpdate /t REG_DWORD /d 1 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $e = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate' -Name 'ExcludeWUDriversInQualityUpdate' -ErrorAction Stop).ExcludeWUDriversInQualityUpdate; $s = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\DriverSearching' -Name 'SearchOrderConfig' -ErrorAction Stop).SearchOrderConfig; if ($e -eq 1 -and $s -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_no_p2p",
+        "name": "DELIVERY OPTIMIZATION - NO P2P (HTTP ONLY)",
+        "description": "Forces Delivery Optimization into HTTP-only mode: no peer-to-peer uploading of update chunks to other PCs, on your LAN or the internet.",
+        "script_on": "updates/delivery_opt_on.bat",
+        "script_off": "updates/delivery_opt_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization\" /v DODownloadMode /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization' -Name 'DODownloadMode' -ErrorAction Stop).DODownloadMode; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_metered_ethernet_wifi",
+        "name": "SET ETHERNET + WIFI AS METERED",
+        "description": "Marks wired and wireless networks as metered so Windows throttles background downloads. Affects Store and Delivery Optimization traffic too.",
+        "script_on": "updates/metered_on.bat",
+        "script_off": "updates/metered_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\NetworkList\\DefaultMediaCost\" /v Ethernet /t REG_DWORD /d 2 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $k = 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\NetworkList\\DefaultMediaCost'; $e = (Get-ItemProperty -Path $k -Name 'Ethernet' -ErrorAction Stop).Ethernet; $w = (Get-ItemProperty -Path $k -Name 'WiFi' -ErrorAction Stop).WiFi; if ($e -eq 2 -and $w -eq 2) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_metered_block_downloads",
+        "name": "BLOCK AUTO-DOWNLOADS ON METERED NETWORKS",
+        "description": "Even security updates stop auto-downloading over metered connections (AllowAutoWindowsUpdateDownloadOverMeteredNetwork=0). Combine with the metered switch above.",
+        "script_on": "updates/metered_blocks_on.bat",
+        "script_off": "updates/metered_blocks_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings\" /v AllowAutoWindowsUpdateDownloadOverMeteredNetwork /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'AllowAutoWindowsUpdateDownloadOverMeteredNetwork' -ErrorAction Stop).AllowAutoWindowsUpdateDownloadOverMeteredNetwork; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_no_innovation",
+        "name": "DON'T GET UPDATES AS SOON AS POSSIBLE",
+        "description": "Opts out of the aggressive fast rollout (IsContinuousInnovationOptedIn=0): updates arrive on the normal cadence instead of day-one.",
+        "script_on": "updates/no_innovation_on.bat",
+        "script_off": "updates/no_innovation_off.bat",
+        "command": "reg add \"HKLM\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings\" /v IsContinuousInnovationOptedIn /t REG_DWORD /d 0 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\SOFTWARE\\Microsoft\\WindowsUpdate\\UX\\Settings' -Name 'IsContinuousInnovationOptedIn' -ErrorAction Stop).IsContinuousInnovationOptedIn; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_disable_service",
+        "name": "DISABLE WINDOWS UPDATE SERVICE",
+        "description": "Stops and disables the wuauserv service - the strongest single switch. Windows may silently repair it via its update medic service within minutes (by design); press CHECK STATE to see the live truth and re-apply if needed. Undo restores manual start.",
+        "script_on": "updates/windows_update_on.bat",
+        "script_off": "updates/windows_update_off.bat",
+        "command": "sc config wuauserv start= disabled",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $s = (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\wuauserv' -Name 'Start' -ErrorAction Stop).Start; if ($s -eq 4) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_disable_uso",
+        "name": "DISABLE UPDATE ORCHESTRATOR (USOSVC)",
+        "description": "Stops and disables the Update Orchestrator service, the component that schedules update scans and install windows.",
+        "script_on": "updates/update_orchestrator_on.bat",
+        "script_off": "updates/update_orchestrator_off.bat",
+        "command": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\UsoSvc\" /v Start /t REG_DWORD /d 4 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $s = (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\UsoSvc' -Name 'Start' -ErrorAction Stop).Start; if ($s -eq 4) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    },
+    {
+        "id": "wu_disable_medic",
+        "name": "DISABLE UPDATE MEDIC (WAASMEDICSVC)",
+        "description": "Stops the service whose job is to repair Windows Update back to health - the piece that often re-enables everything above. Undo restores manual start.",
+        "script_on": "updates/medusvc_on.bat",
+        "script_off": "updates/medusvc_off.bat",
+        "command": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\WaaSMedicSvc\" /v Start /t REG_DWORD /d 4 /f",
+        "default_state": false,
+        "check": "powershell -NoProfile -Command \"try { $s = (Get-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\WaaSMedicSvc' -Name 'Start' -ErrorAction Stop).Start; if ($s -eq 4) { exit 0 } else { exit 1 } } catch { exit 1 }\""
+    }
+]

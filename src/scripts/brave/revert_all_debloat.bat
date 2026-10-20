@@ -16,5 +16,5 @@ reg add "HKLM\SOFTWARE\Policies\BraveSoftware\Brave" /v AutofillCreditCardEnable
 reg add "HKLM\SOFTWARE\Policies\BraveSoftware\Brave" /v HomepageIsNewTabPage /t REG_DWORD /d 0 /f
 reg add "HKLM\SOFTWARE\Policies\BraveSoftware\Brave" /v RestoreOnStartup /t REG_DWORD /d 1 /f
 reg add "HKLM\SOFTWARE\Policies\BraveSoftware\Brave" /v SafeBrowsingEnabled /t REG_DWORD /d 0 /f
-reg add "HKLM\SOFTWARE\Policies\BraveSoftware\Brave" /v HttpsOnlyMode /t REG_DWORD /d 0 /f
+reg delete "HKLM\SOFTWARE\Policies\BraveSoftware\Brave" /v HttpsOnlyMode /f
 exit /b 0

@@ -1,5 +1,4 @@
 @echo off
-powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PERFBOOSTMODE 2
+powercfg -setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PERFBOOSTMODE 0
 powercfg -setactive SCHEME_CURRENT
 exit /b %errorlevel%
-

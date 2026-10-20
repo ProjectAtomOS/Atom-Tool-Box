@@ -6,7 +6,7 @@
   {"id": "calypto", "name": "CALYPTO POWER PLAN", "description": "Ultra-low latency power plan designed for fast-paced FPS and rhythm games.", "script": "powerplans/calypto_apply.bat"},
   {"id": "core", "name": "CORE POWER PLAN", "description": "Minimalist power plan that keeps cores unparked and frequencies at maximum.", "script": "powerplans/core_apply.bat"},
   {"id": "exmfree", "name": "EXMFREE POWER PLAN", "description": "Excessive power plan that removes all CPU power limits and thermal throttling.", "script": "powerplans/exmfree_apply.bat"},
-  {"id": "framesync", "name": "FRAMESYNC BOOST", "description": "Synchronized frame pacing power plan for stable FPS without stuttering.", "script": "powerplans/framesync_apply.bat"},
+  {"id": "framesync", "name": "FRAMESYNC BOOST", "description": "Synchronized frame pacing power plan for stable FPS without stuttering.", "script": "powerplans/framesyncboost_apply.bat"},
   {"id": "hybred", "name": "HYBRED POWER PLAN", "description": "Hybrid power plan combining aggressive CPU states with adaptive GPU scaling.", "script": "powerplans/hybred_apply.bat"},
   {"id": "kaisen", "name": "KAISEN POWER PLAN", "description": "Anime-inspired performance plan with maximum responsiveness and zero idle states.", "script": "powerplans/kaisen_apply.bat"},
   {"id": "khorvie", "name": "KHORVIE POWER PLAN", "description": "Extreme power plan optimized for 240Hz+ monitors and competitive gaming.", "script": "powerplans/khorvie_apply.bat"},

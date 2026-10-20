@@ -27,7 +27,7 @@
     "script_off": "gpu/gpupowersave_on.bat",
     "command": "powercfg -setacvalueindex SCHEME_CURRENT SUB_GRAPHICS GPUPREFERENCEPOLICY 1",
     "default_state": false,
-    "check": "powershell -NoProfile -Command \"$r = powercfg /query SCHEME_CURRENT SUB_GRAPHICS GPUPREFERENCEPOLICY 2>&1; if ($r -match '0x1') { exit 0 } else { exit 1 }\""
+    "check": "powershell -NoProfile -Command \"$r = powercfg /qh SCHEME_CURRENT SUB_GRAPHICS GPUPREFERENCEPOLICY 2>&1; if ($r -match 'Current AC Power Setting Index: 0x00000001') { exit 0 } else { exit 1 }\""
   },
   {
     "id": "disable_vsync",
@@ -80,16 +80,6 @@
     "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Avalon.Graphics' -Name 'DisableHWAcceleration' -ErrorAction Stop).DisableHWAcceleration; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
   },
   {
-    "id": "disable_wddm_opt",
-    "name": "DISABLE WDDM OPTIMIZATION",
-    "description": "Disables WDDM driver optimizations that may introduce rendering overhead.",
-    "script_on": "gpu/wddm_off.bat",
-    "script_off": "gpu/wddm_on.bat",
-    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v PlatformOptimization /t REG_DWORD /d 1 /f",
-    "default_state": false,
-    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'PlatformOptimization' -ErrorAction Stop).PlatformOptimization; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-  },
-  {
     "id": "gpu_tdr_delay",
     "name": "GPU TDR DELAY EXTEND",
     "description": "Extends the timeout detection and recovery delay for GPU driver hangs.",
@@ -98,56 +88,6 @@
     "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v TdrDdiDelay /t REG_DWORD /d 8 /f",
     "default_state": false,
     "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'TdrDdiDelay' -ErrorAction Stop).TdrDdiDelay; if ($v -eq 8) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-  },
-  {
-    "id": "disable_gpu_mem_throttle",
-    "name": "DISABLE GPU MEMORY THROTTLING",
-    "description": "Prevents the GPU memory controller from throttling bandwidth under load.",
-    "script_on": "gpu/memthrottle_off.bat",
-    "script_off": "gpu/memthrottle_on.bat",
-    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v MemoryThrottling /t REG_DWORD /d 0 /f",
-    "default_state": false,
-    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'MemoryThrottling' -ErrorAction Stop).MemoryThrottling; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-  },
-  {
-    "id": "enable_shader_cache",
-    "name": "ENABLE SHADER CACHE",
-    "description": "Enables persistent GPU shader cache for improved performance in repeated workloads.",
-    "script_on": "gpu/shader_off.bat",
-    "script_off": "gpu/shader_on.bat",
-    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v ShaderCache /t REG_DWORD /d 1 /f",
-    "default_state": false,
-    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'ShaderCache' -ErrorAction Stop).ShaderCache; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-  },
-  {
-    "id": "gpu_optimize_compute",
-    "name": "GPU COMPUTE OPTIMIZATION",
-    "description": "Optimizes GPU scheduling for compute workloads over graphics rendering.",
-    "script_on": "gpu/compute_off.bat",
-    "script_off": "gpu/compute_on.bat",
-    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v ComputeOptimization /t REG_DWORD /d 1 /f",
-    "default_state": false,
-    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'ComputeOptimization' -ErrorAction Stop).ComputeOptimization; if ($v -eq 1) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-  },
-  {
-    "id": "disable_gpu_flicker",
-    "name": "DISABLE GPU Flicker Mitigation",
-    "description": "Turns off display flicker mitigation that can add rendering latency.",
-    "script_on": "gpu/flicker_off.bat",
-    "script_off": "gpu/flicker_on.bat",
-    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v FlickerMitigation /t REG_DWORD /d 0 /f",
-    "default_state": false,
-    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'FlickerMitigation' -ErrorAction Stop).FlickerMitigation; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
-  },
-  {
-    "id": "gpu_max_fps",
-    "name": "GPU MAXIMUM FRAME RATE",
-    "description": "Sets a driver-level maximum frame rate cap for consistent rendering.",
-    "script_on": "gpu/maxfps_off.bat",
-    "script_off": "gpu/maxfps_on.bat",
-    "command": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\GraphicsDrivers\" /v GlobalFPSLimit /t REG_DWORD /d 0 /f",
-    "default_state": false,
-    "check": "powershell -NoProfile -Command \"try { $v = (Get-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'GlobalFPSLimit' -ErrorAction Stop).GlobalFPSLimit; if ($v -eq 0) { exit 0 } else { exit 1 } } catch { exit 1 }\""
   },
   {
     "id": "disable_storage_sense",

@@ -1,3 +1,3 @@
 @echo off
-reg add "HKLM\SOFTWARE\Policies\BraveSoftware\Brave" /v HttpsOnlyMode /t REG_DWORD /d 0 /f
+reg delete "HKLM\SOFTWARE\Policies\BraveSoftware\Brave" /v HttpsOnlyMode /f
 exit /b %errorlevel%
