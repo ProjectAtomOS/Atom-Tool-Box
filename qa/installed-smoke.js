@@ -1,5 +1,5 @@
 'use strict';
-// Smoke-test the *installed* AtomToolBox 0.3.0 package (not the dev tree).
+// Smoke-test the *installed* AtomToolBox 0.2.0 package (not the dev tree).
 // Launches C:\Program Files\AtomToolBox\AtomToolBox.exe with CDP, checks the
 // packaged UI, PRO lock popup, power plans basic-only page, debloat scan and
 // version label.
@@ -136,9 +136,9 @@ async function main() {
 
     // ---- 5. version label on SETTINGS
     await cdp.eval(`document.querySelector('.nav-item[data-view="settings"]').click(); true`);
-    await waitFor(cdp, `document.body.textContent.includes('Atom ToolBox v0.3.0')`, 15000, 'version label');
+    await waitFor(cdp, `document.body.textContent.includes('Atom ToolBox v0.2.0')`, 15000, 'version label');
     const versionText = await cdp.eval(`(document.body.textContent.match(/Atom ToolBox v[0-9.]+/) || [''])[0]`);
-    results.push(result('installed package is v0.3.0', versionText === 'Atom ToolBox v0.3.0', versionText));
+    results.push(result('installed package is v0.2.0', versionText === 'Atom ToolBox v0.2.0', versionText));
 
     // ---- 6. no renderer crashes while exercising the app
     await cdp.eval(`document.querySelector('.nav-item[data-view="dashboard"]').click(); true`);

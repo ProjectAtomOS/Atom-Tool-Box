@@ -2,7 +2,7 @@
 
 A Windows 10/11 x64 tweak and system utility toolbox built with Electron.
 
-**Version:** 0.3.0
+**Version:** 0.2.0
 
 **Repository:** https://github.com/ProjectAtomOS/Atom-Tool-Box
 
@@ -42,7 +42,7 @@ npm run check    # syntax-check main.js and renderer.js
 npm run build    # build the NSIS installer into dist/
 ```
 
-The build output is `dist/AtomToolBox-Setup-0.3.0.exe`.
+The build output is `dist/AtomToolBox-Setup-0.2.0.exe`.
 
 ## Releases
 
@@ -97,7 +97,7 @@ The generator writes the gallery to `screenshots/` locally. That folder is inten
 - [Audit report](docs/AUDIT_REPORT.md)
 - [Documentation index](docs/README.md)
 - [Changelog](CHANGELOG.md)
-- [Release notes for 0.3.0](docs/RELEASE_NOTES_v0.3.0.md)
+- [Release notes for 0.2.0](docs/RELEASE_NOTES_v0.2.0.md)
 - [Windows App Debloat guide](docs/DEBLOAT.md)
 - [Security policy](SECURITY.md)
 

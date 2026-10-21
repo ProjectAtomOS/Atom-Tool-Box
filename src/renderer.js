@@ -2059,7 +2059,7 @@ function renderSettings() {
         <div class="settings-row">
           <div class="settings-row-info">
             <div class="settings-row-name">APP VERSION</div>
-            <div class="settings-row-desc">Atom ToolBox v0.3.0</div>
+            <div class="settings-row-desc">Atom ToolBox v0.2.0</div>
           </div>
         </div>
       </div>

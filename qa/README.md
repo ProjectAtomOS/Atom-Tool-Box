@@ -1,6 +1,6 @@
 # QA harnesses
 
-These scripts drive the AtomToolBox 0.3.0 build over the Chrome DevTools Protocol. They are development tools, not part of the packaged application.
+These scripts drive the AtomToolBox 0.2.0 build over the Chrome DevTools Protocol. They are development tools, not part of the packaged application.
 
 ## Requirements
 
