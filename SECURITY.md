@@ -2,7 +2,13 @@
 
 ## Supported versions
 
-The latest 0.2.x release is supported with security fixes.
+The latest 0.3.x release is supported with security fixes.
+
+AtomToolBox runs with administrator rights by design, so only run the official installer or a build you made from this repository.
+
+## Runtime note
+
+0.3.x ships Electron 28.3.3. The app loads local UI files and does not embed arbitrary remote pages, but the runtime is older than current upstream Electron releases. A major Electron upgrade is tracked as a separate compatibility and packaging task.
 
 ## Reporting a vulnerability
 
