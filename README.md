@@ -2,7 +2,7 @@
 
 A Windows 10/11 x64 tweak and system utility toolbox built with Electron.
 
-**Version:** 0.2.0
+**Version:** 0.3.0
 
 **Repository:** https://github.com/ProjectAtomOS/Atom-Tool-Box
 
@@ -18,6 +18,7 @@ The four entries in the **ADVANCED** group are intentionally locked in this buil
 - Background Monitor with process kill and application blocking
 - Startup Manager using native StartupApproved behaviour
 - Context Menu add/remove verbs
+- Windows App Debloat with per-app selection, all-user removal and provisioned-package cleanup
 - Brave Debloater and system Cleaner
 - Power Plans: create, import, export, edit everyday settings and timer resolution
 - Backup & Restore: restore points and registry backups
@@ -29,7 +30,7 @@ The four entries in the **ADVANCED** group are intentionally locked in this buil
 
 - Windows 10 or Windows 11, x64
 - Node.js 18 or newer for development
-- Administrator rights for system-wide tweaks
+- Administrator rights; AtomToolBox always runs elevated and asks for UAC approval at launch
 
 ## Development
 
@@ -41,7 +42,7 @@ npm run check    # syntax-check main.js and renderer.js
 npm run build    # build the NSIS installer into dist/
 ```
 
-The build output is `dist/AtomToolBox-Setup-0.2.0.exe`.
+The build output is `dist/AtomToolBox-Setup-0.3.0.exe`.
 
 ## Releases
 
@@ -96,7 +97,8 @@ The generator writes the gallery to `screenshots/` locally. That folder is inten
 - [Audit report](docs/AUDIT_REPORT.md)
 - [Documentation index](docs/README.md)
 - [Changelog](CHANGELOG.md)
-- [Release notes for 0.2.0](docs/RELEASE_NOTES_v0.2.0.md)
+- [Release notes for 0.3.0](docs/RELEASE_NOTES_v0.3.0.md)
+- [Windows App Debloat guide](docs/DEBLOAT.md)
 - [Security policy](SECURITY.md)
 
 ## License
@@ -106,3 +108,5 @@ MIT — see [LICENSE](LICENSE).
 ## Safety
 
 AtomToolBox changes Windows settings. Some tweaks affect services, security features and system behaviour. Create a restore point before applying system-wide changes, and review each tweak description before turning it on.
+
+Windows App Debloat is intentionally destructive: selected Store/MSIX apps are removed for every user, and their provisioned copies are removed so Windows does not reinstall them for new accounts. Removal is not reversible from AtomToolBox. Reinstall an app from the Microsoft Store or its vendor if needed. Read [docs/DEBLOAT.md](docs/DEBLOAT.md) before using it.

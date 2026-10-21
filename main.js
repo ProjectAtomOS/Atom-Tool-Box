@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const { exec, spawn } = require('child_process');
 const fs = require('fs');
@@ -31,6 +31,83 @@ const SCRIPTS_DIR = (() => {
   console.log('[SCRIPTS_DIR] FALLBACK:', devPath);
   return devPath;
 })();
+
+// ---------- ALWAYS RUN AS ADMINISTRATOR ----------
+// The packaged executable also carries a requireAdministrator manifest (see
+// build.win.requestedExecutionLevel). This runtime guard covers development
+// runs and unusual launch paths where the manifest was bypassed.
+let _adminCache = null;
+function isAdmin() {
+  if (_adminCache !== null) return _adminCache;
+  try {
+    const { execSync } = require('child_process');
+    // S-1-16-12288 is the High Mandatory Level SID. Checking it avoids the
+    // false negative that `net session` produces when the Server service is off.
+    const out = execSync('whoami /groups /fo csv /nh', {
+      encoding: 'utf8', windowsHide: true, timeout: 5000
+    });
+    _adminCache = /\bS-1-16-12288\b/.test(out);
+  } catch {
+    try {
+      const { execSync } = require('child_process');
+      execSync('net session', { stdio: 'ignore', windowsHide: true, timeout: 5000 });
+      _adminCache = true;
+    } catch {
+      _adminCache = false;
+    }
+  }
+  return _adminCache;
+}
+
+const ELEVATED_FLAG = '--atom-elevated';
+function psSingleQuote(value) {
+  return "'" + String(value).replace(/'/g, "''") + "'";
+}
+
+function relaunchElevated() {
+  return new Promise((resolve) => {
+    const exe = process.execPath;
+    const argLine = app.isPackaged
+      ? ELEVATED_FLAG
+      : `"${path.resolve(__dirname)}" ${ELEVATED_FLAG}`;
+    const ps = `$ErrorActionPreference = 'Stop'; Start-Process -FilePath ${psSingleQuote(exe)} -ArgumentList ${psSingleQuote(argLine)} -Verb RunAs`;
+    let settled = false;
+    let timer = null;
+    const finish = (ok) => {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      resolve(ok);
+    };
+    const child = spawn('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', ps], { windowsHide: true });
+    child.on('error', () => finish(false));
+    child.on('close', (code) => finish(code === 0));
+    timer = setTimeout(() => finish(false), 120000);
+  });
+}
+
+if (process.platform === 'win32' && !isAdmin()) {
+  if (process.argv.includes(ELEVATED_FLAG)) {
+    dialog.showErrorBox(
+      'Administrator rights required',
+      'AtomToolBox could not obtain administrator rights. Close the app and launch it again, then approve the Windows UAC prompt.'
+    );
+    app.exit(1);
+  } else {
+    relaunchElevated().then((ok) => {
+      if (!ok) {
+        dialog.showErrorBox(
+          'Administrator rights required',
+          'AtomToolBox must run as administrator. The elevated launch was cancelled or blocked by Windows. Launch the app again and approve the UAC prompt.'
+        );
+      }
+      app.exit(ok ? 0 : 1);
+    });
+  }
+  // This process must not create a window or take the single-instance lock;
+  // the elevated process becomes the real application instance.
+  return;
+}
 
 let mainWindow;
 
@@ -224,17 +301,6 @@ ipcMain.handle('get-system-info', async () => {
     uptime
   };
 });
-
-let _adminCache = null;
-function isAdmin() {
-  if (_adminCache !== null) return _adminCache;
-  try {
-    const { execSync } = require('child_process');
-    execSync('net session', { stdio: 'ignore' });
-    _adminCache = true;
-    return true;
-  } catch { _adminCache = false; return false; }
-}
 
 ipcMain.handle('check-admin', () => isAdmin());
 
@@ -820,6 +886,299 @@ $result | ConvertTo-Json -Compress
       resolve([]);
     });
   });
+});
+
+// ---------- WINDOWS APP DEBLOAT ----------
+// The catalog lives in src/config/debloat.json so the list is reviewable and
+// versioned. Every requested package name is validated in main before it can
+// reach PowerShell; the renderer cannot submit arbitrary package names.
+const DEBLOAT_TOOL = path.join(SCRIPTS_DIR, 'debloat', 'debloat_tool.ps1');
+const DEBLOAT_CONFIG = path.join(__dirname, 'src', 'config', 'debloat.json');
+
+function loadDebloatCatalog() {
+  try {
+    let raw = fs.readFileSync(DEBLOAT_CONFIG, 'utf8');
+    if (raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1);
+    const list = JSON.parse(raw);
+    if (!Array.isArray(list)) return [];
+    return list
+      .filter(a => a && typeof a.id === 'string' && /^[a-z0-9_]+$/.test(a.id) &&
+        typeof a.name === 'string' && Array.isArray(a.names) && a.names.length > 0 &&
+        a.names.every(n => typeof n === 'string' && /^[A-Za-z0-9._-]+$/.test(n)))
+      .map(a => ({
+        id: a.id,
+        name: a.name,
+        category: String(a.category || 'OTHER'),
+        description: String(a.description || ''),
+        names: [...new Set(a.names)]
+      }));
+  } catch (e) {
+    console.error('[debloat] catalog load failed:', e.message);
+    return [];
+  }
+}
+
+function debloatPayload(names) {
+  return Buffer.from(JSON.stringify(names), 'utf8').toString('base64');
+}
+
+function asArray(value) {
+  if (Array.isArray(value)) return value;
+  return value == null ? [] : [value];
+}
+
+function readJsonFile(file) {
+  try {
+    let raw = fs.readFileSync(file, 'utf8');
+    if (raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1);
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function countPackagesByName(items) {
+  const counts = new Map();
+  for (const pkg of asArray(items)) {
+    if (!pkg || !pkg.name) continue;
+    const key = String(pkg.name).toLowerCase();
+    counts.set(key, (counts.get(key) || 0) + 1);
+  }
+  return counts;
+}
+
+async function debloatScanSnapshot(names) {
+  const r = await psFile(DEBLOAT_TOOL, ['-Action', 'scan', '-NamesB64', debloatPayload(names)], 90000);
+  const data = psJson(r.raw);
+  if (!data || data.ok !== true) return null;
+  return data;
+}
+
+// AppX enumeration is expensive on older machines. Keep a short-lived scan
+// cache so navigating away and back does not launch another PowerShell scan.
+let _debloatCache = { time: 0, result: null };
+const DEBLOAT_CACHE_TTL = 60000;
+
+ipcMain.handle('debloat-scan', async (event, opts = {}) => {
+  if (!(opts && opts.force) && _debloatCache.result && Date.now() - _debloatCache.time < DEBLOAT_CACHE_TTL) {
+    return _debloatCache.result;
+  }
+  const catalog = loadDebloatCatalog();
+  if (!catalog.length) return { ok: false, error: 'Debloat catalog could not be loaded.' };
+  if (!fs.existsSync(DEBLOAT_TOOL)) return { ok: false, error: 'Debloat helper script is missing.' };
+
+  const names = [...new Set(catalog.flatMap(a => a.names))];
+  const r = await psFile(DEBLOAT_TOOL, ['-Action', 'scan', '-NamesB64', debloatPayload(names)], 90000);
+  const data = psJson(r.raw);
+  if (!data || data.ok !== true) {
+    return { ok: false, error: (data && data.error) || r.error || 'App scan failed.', detail: r.stderr || '' };
+  }
+
+  const installed = asArray(data.installed).filter(Boolean);
+  const provisioned = asArray(data.provisioned).filter(Boolean);
+  const installedByName = new Map();
+  const seenPackages = new Set();
+  for (const pkg of installed) {
+    const key = String(pkg.packageFullName || '').toLowerCase();
+    if (key && seenPackages.has(key)) continue;
+    if (key) seenPackages.add(key);
+    const keyName = String(pkg.name || '').toLowerCase();
+    if (!keyName) continue;
+    if (!installedByName.has(keyName)) installedByName.set(keyName, []);
+    installedByName.get(keyName).push({
+      packageFullName: String(pkg.packageFullName || ''),
+      version: String(pkg.version || ''),
+      nonRemovable: !!pkg.nonRemovable
+    });
+  }
+
+  const provisionedByName = new Map();
+  for (const pkg of provisioned) {
+    const key = String(pkg.name || '').toLowerCase();
+    if (!key) continue;
+    provisionedByName.set(key, (provisionedByName.get(key) || 0) + 1);
+  }
+
+  const apps = catalog.map(a => {
+    const packages = a.names.flatMap(n => installedByName.get(n.toLowerCase()) || []);
+    const removable = packages.filter(p => !p.nonRemovable).length;
+    const protectedCount = packages.filter(p => p.nonRemovable).length;
+    const provisionedCount = a.names.reduce((sum, n) => sum + (provisionedByName.get(n.toLowerCase()) || 0), 0);
+    return {
+      id: a.id,
+      name: a.name,
+      category: a.category,
+      description: a.description,
+      packageNames: a.names,
+      installed: packages.length,
+      removable,
+      protectedCount,
+      provisioned: provisionedCount,
+      canRemove: removable > 0 || provisionedCount > 0
+    };
+  });
+
+  const result = {
+    ok: true,
+    apps,
+    scope: data.scope || 'all-users',
+    provisionedError: data.provisionedError || '',
+    admin: isAdmin(),
+    scannedAt: Date.now()
+  };
+  _debloatCache = { time: Date.now(), result };
+  return result;
+});
+
+ipcMain.handle('debloat-remove', async (event, { ids } = {}) => {
+  requireAdmin('Removing Windows apps');
+  const catalog = loadDebloatCatalog();
+  if (!catalog.length) return { ok: false, error: 'Debloat catalog could not be loaded.' };
+  if (!fs.existsSync(DEBLOAT_TOOL)) return { ok: false, error: 'Debloat helper script is missing.' };
+
+  const wanted = new Set(asArray(ids).filter(id => typeof id === 'string'));
+  const selected = catalog.filter(a => wanted.has(a.id));
+  if (!selected.length) return { ok: false, error: 'No valid apps were selected.' };
+  if (selected.length > 100) return { ok: false, error: 'Too many apps selected.' };
+
+  const names = [...new Set(selected.flatMap(a => a.names))];
+  const resultPath = path.join(os.tmpdir(), `atom_debloat_${process.pid}_${Date.now()}.json`);
+  const log = senderLog(event);
+  let helperData = null;
+  let helperError = '';
+  let helperExit = null;
+
+  try {
+    log(`> Removing ${selected.length} selected app group(s) for all users...`);
+    // The helper writes an atomic progress file after every app. If Windows
+    // takes too long or the helper exits unexpectedly, partial progress is
+    // still recoverable instead of being reported as a total failure.
+    const r = await psFile(
+      DEBLOAT_TOOL,
+      ['-Action', 'remove', '-NamesB64', debloatPayload(names), '-ResultPath', resultPath],
+      900000
+    );
+    helperExit = r;
+    helperData = psJson(r.raw);
+
+    if (!helperData || helperData.ok !== true) {
+      helperError = (helperData && helperData.error) || r.error || 'The removal helper returned no result.';
+      const partial = readJsonFile(resultPath);
+      if (partial && Array.isArray(partial.results)) {
+        helperData = partial;
+        if (r.error === 'timeout') {
+          helperError = 'The removal helper timed out after recording partial progress.';
+        } else if (!helperError) {
+          helperError = 'The removal helper ended before returning its final result.';
+        }
+      }
+    } else if (!r.ok) {
+      helperError = r.error || 'The removal helper ended with an error.';
+    }
+
+    if (helperData && helperData.ok === false && helperData.error === 'ADMIN_REQUIRED') {
+      return { ok: false, error: 'Administrator privileges are required to remove Windows apps.' };
+    }
+
+    const helperRows = asArray(helperData && helperData.results).filter(Boolean);
+    const helperComplete = !!(helperData && helperData.complete === true);
+    const helperByName = new Map();
+    for (const row of helperRows) {
+      helperByName.set(String(row.name || '').toLowerCase(), row);
+    }
+
+    // Never trust only the helper's own exit code. A fresh scan confirms what
+    // is actually present for all users after Windows finishes deployment.
+    log('> Verifying removal with a fresh AppX scan...');
+    await new Promise(resolve => setTimeout(resolve, 750));
+    let verify = null;
+    let verificationError = '';
+    try {
+      verify = await debloatScanSnapshot(names);
+      if (!verify) verificationError = 'The verification scan could not read the AppX state.';
+    } catch (e) {
+      verificationError = String(e.message || e);
+    }
+
+    const verifyInstalled = verify ? countPackagesByName(verify.installed) : null;
+    const verifyProvisioned = verify ? countPackagesByName(verify.provisioned) : null;
+    const verificationLimited = !!(verify && verify.scope && verify.scope !== 'all-users');
+    const verificationProvisionedError = verify && verify.provisionedError
+      ? String(verify.provisionedError)
+      : '';
+
+    const results = selected.map(a => {
+      const rows = a.names.map(n => helperByName.get(n.toLowerCase())).filter(Boolean);
+      const helperErrors = rows
+        .flatMap(row => asArray(row.errors).map(e => String(e)))
+        .filter(Boolean);
+      const helperRemaining = rows.reduce((sum, row) => sum + (Number(row.remaining) || 0), 0);
+      const helperProvisionedRemaining = rows.reduce((sum, row) => sum + (Number(row.provisionedRemaining) || 0), 0);
+
+      const remaining = verify
+        ? a.names.reduce((sum, n) => sum + (verifyInstalled.get(n.toLowerCase()) || 0), 0)
+        : helperRemaining;
+      const provisionedRemaining = verify
+        ? a.names.reduce((sum, n) => sum + (verifyProvisioned.get(n.toLowerCase()) || 0), 0)
+        : helperProvisionedRemaining;
+
+      const errors = [...helperErrors];
+      if (verificationLimited) {
+        errors.push('The all-user app scan is unavailable, so all-user removal could not be verified.');
+      }
+      if (verificationProvisionedError) {
+        errors.push('Provisioned-package verification failed: ' + verificationProvisionedError.substring(0, 180));
+      }
+      if (remaining > 0) errors.push(`${remaining} installed package(s) still present.`);
+      if (provisionedRemaining > 0) errors.push(`${provisionedRemaining} provisioned package(s) still present.`);
+
+      const helperCoversEveryName = rows.length === a.names.length;
+      let ok;
+      if (verify) {
+        ok = !verificationLimited && !verificationProvisionedError &&
+          remaining === 0 && provisionedRemaining === 0;
+      } else {
+        ok = helperComplete && helperCoversEveryName && rows.every(row => row.ok === true) &&
+          helperRemaining === 0 && helperProvisionedRemaining === 0;
+        if (!helperCoversEveryName) {
+          errors.push('The removal helper stopped before reporting every package.');
+        }
+      }
+
+      return {
+        id: a.id,
+        name: a.name,
+        ok,
+        removed: rows.reduce((sum, row) => sum + (Number(row.removed) || 0), 0),
+        provisionedRemoved: rows.reduce((sum, row) => sum + (Number(row.provisionedRemoved) || 0), 0),
+        skipped: rows.reduce((sum, row) => sum + (Number(row.skipped) || 0), 0),
+        remaining,
+        provisionedRemaining,
+        errors: ok ? [] : errors,
+        warnings: ok ? errors : [],
+        verified: !!verify
+      };
+    });
+
+    _appsCache = { time: 0, data: null };
+    _debloatCache = { time: 0, result: null };
+    const failed = results.filter(r => !r.ok).length;
+    const partial = !!helperError || (helperData && helperData.complete === false);
+    log(`> Debloat finished: ${results.length - failed} app group(s) clean, ${failed} with issues${partial ? ' (partial helper result)' : ''}.`);
+    return {
+      ok: true,
+      results,
+      failed,
+      partial,
+      helperError,
+      verificationError,
+      verificationLimited,
+      stderr: (helperExit && helperExit.stderr) || ''
+    };
+  } finally {
+    try { fs.unlinkSync(resultPath); } catch {}
+    try { fs.unlinkSync(resultPath + '.tmp'); } catch {}
+  }
 });
 
 ipcMain.handle('run-cleaner', async (event, { command }) => {

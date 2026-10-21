@@ -1,7 +1,8 @@
 'use strict';
-// Smoke-test the *installed* AtomToolBox 0.2.0 package (not the dev tree).
+// Smoke-test the *installed* AtomToolBox 0.3.0 package (not the dev tree).
 // Launches C:\Program Files\AtomToolBox\AtomToolBox.exe with CDP, checks the
-// packaged UI, PRO lock popup, power plans basic-only page, and version label.
+// packaged UI, PRO lock popup, power plans basic-only page, debloat scan and
+// version label.
 //
 // Run: node qa/installed-smoke.js
 
@@ -78,8 +79,8 @@ async function main() {
       cta: !!document.querySelector('.nav-cta[data-cta="optimizer"]'),
       active: (document.querySelector('.nav-item.active') || {}).dataset ? document.querySelector('.nav-item.active').dataset.view : ''
     })`);
-    results.push(result('installed package boots and renders the 20-view shell (4 PRO locks + optimizer CTA)',
-      shell.views === 20 && shell.locked === 4 && shell.cta === true,
+    results.push(result('installed package boots and renders the 21-view shell (4 PRO locks + optimizer CTA)',
+      shell.views === 21 && shell.locked === 4 && shell.cta === true,
       JSON.stringify(shell).slice(0, 300)));
 
     // ---- 2. PRO gate popup (no navigation)
@@ -118,13 +119,28 @@ async function main() {
       pps.rows >= 12 && pps.rows <= 16 && pps.noModeTabs && pps.noAdvancedWidgets && pps.create && pps.exportBtn,
       JSON.stringify(pps).slice(0, 320)));
 
-    // ---- 4. version label on SETTINGS
-    await cdp.eval(`document.querySelector('.nav-item[data-view="settings"]').click(); true`);
-    await waitFor(cdp, `document.body.textContent.includes('Atom ToolBox v0.2.0')`, 15000, 'version label');
-    const versionText = await cdp.eval(`(document.body.textContent.match(/Atom ToolBox v[0-9.]+/) || [''])[0]`);
-    results.push(result('installed package is v0.2.0', versionText === 'Atom ToolBox v0.2.0', versionText));
+    // ---- 4. debloat page scans in the installed build (no removal)
+    await cdp.eval(`document.querySelector('.nav-item[data-view="debloat"]').click(); true`);
+    await waitFor(cdp, `document.querySelectorAll('#debloat-list .debloat-row').length >= 1`, 120000, 'installed debloat rows');
+    await waitFor(cdp, `/SCAN COMPLETE|ADMINISTRATOR TOKEN|SCAN FAILED/.test((document.getElementById('debloat-status') || {}).textContent || '')`, 120000, 'installed debloat scan');
+    const debloat = await cdp.eval(`({
+      rows: document.querySelectorAll('#debloat-list .debloat-row').length,
+      visible: Array.from(document.querySelectorAll('#debloat-list .debloat-row')).filter(r => r.style.display !== 'none').length,
+      status: (document.getElementById('debloat-status') || {}).textContent || '',
+      hasRemove: !!document.getElementById('debloat-remove'),
+      hasFilter: !!document.getElementById('debloat-filter')
+    })`);
+    results.push(result('installed debloat page scans and renders the catalog',
+      debloat.rows >= 1 && debloat.visible >= 1 && debloat.hasRemove && debloat.hasFilter && /SCAN COMPLETE/.test(debloat.status),
+      JSON.stringify(debloat).slice(0, 340)));
 
-    // ---- 5. no renderer crashes while exercising the app
+    // ---- 5. version label on SETTINGS
+    await cdp.eval(`document.querySelector('.nav-item[data-view="settings"]').click(); true`);
+    await waitFor(cdp, `document.body.textContent.includes('Atom ToolBox v0.3.0')`, 15000, 'version label');
+    const versionText = await cdp.eval(`(document.body.textContent.match(/Atom ToolBox v[0-9.]+/) || [''])[0]`);
+    results.push(result('installed package is v0.3.0', versionText === 'Atom ToolBox v0.3.0', versionText));
+
+    // ---- 6. no renderer crashes while exercising the app
     await cdp.eval(`document.querySelector('.nav-item[data-view="dashboard"]').click(); true`);
     await sleep(1200);
     results.push(result('no renderer exceptions/console errors during the installed-app smoke run',

@@ -512,6 +512,7 @@ function navigateTo(view) {
     case 'gpu': renderTweaks('gpu', 'GPU CONFIGURATIONS'); break;
     case 'privacy': renderTweaks('privacy', 'PRIVACY SETTINGS'); break;
     case 'brave': renderTweaks('brave', 'BRAVE BROWSER DEBLOAT'); break;
+    case 'debloat': renderDebloat(); break;
     case 'contextmenu': renderContextMenu(); break;
     case 'shortcuts': renderShortcuts(); break;
     case 'cleaner': renderCleaner(); break;
@@ -1767,6 +1768,254 @@ async function renderAppList() {
   }
 }
 
+// ---------- WINDOWS APP DEBLOAT ----------
+// Select AppX/MSIX packages and remove them for every user, plus their
+// provisioned copies. The list comes from the main process so the renderer
+// never gets to choose arbitrary package names.
+
+let debloatPageToken = 0;
+
+function debloatEsc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+async function renderDebloat() {
+  const token = ++debloatPageToken;
+  let showAbsent = false;
+  let removing = false;
+  let scanSeq = 0;
+
+  content.innerHTML = `
+    <div class="section-title">WINDOWS APP DEBLOAT <span class="tweak-count" id="debloat-count">SCANNING...</span></div>
+    <div class="debloat-notice">SELECT PREINSTALLED APPS AND REMOVE THEM FOR ALL USERS. PROVISIONED COPIES ARE ALSO REMOVED SO WINDOWS DOES NOT REINSTALL THEM FOR NEW USERS. REMOVAL CANNOT BE UNDONE FROM THIS APP.</div>
+    <div class="debloat-toolbar">
+      <div class="debloat-summary" id="debloat-summary">0 SELECTED</div>
+      <div class="debloat-actions">
+        <button class="settings-btn" id="debloat-select-all">SELECT ALL VISIBLE</button>
+        <button class="settings-btn" id="debloat-clear">CLEAR</button>
+        <button class="settings-btn" id="debloat-show-absent">SHOW NOT INSTALLED</button>
+        <button class="settings-btn" id="debloat-refresh">REFRESH</button>
+        <button class="debloat-remove-btn" id="debloat-remove" disabled>REMOVE SELECTED (0)</button>
+      </div>
+    </div>
+    <div class="applist-search"><input type="text" class="applist-input" placeholder="FILTER APPS..." id="debloat-filter"></div>
+    <div id="debloat-list"><div class="applist-status">SCANNING INSTALLED WINDOWS APPS...</div></div>
+    <div class="debloat-status" id="debloat-status">READY.</div>
+  `;
+
+  const listEl = document.getElementById('debloat-list');
+  const statusEl = document.getElementById('debloat-status');
+  const filterEl = document.getElementById('debloat-filter');
+  const removeBtn = document.getElementById('debloat-remove');
+  const summaryEl = document.getElementById('debloat-summary');
+  if (!listEl || !statusEl || !filterEl || !removeBtn) return;
+
+  function updateSelectionUI() {
+    const boxes = Array.from(listEl.querySelectorAll('.debloat-check:not(:disabled)'));
+    const selected = boxes.filter(cb => cb.checked).length;
+    if (summaryEl) summaryEl.textContent = `${selected} SELECTED`;
+    removeBtn.disabled = selected === 0 || removing;
+    removeBtn.textContent = removing ? 'REMOVING...' : `REMOVE SELECTED (${selected})`;
+  }
+
+  function applyVisibility() {
+    const q = filterEl.value.trim().toLowerCase();
+    let visible = 0;
+    listEl.querySelectorAll('.debloat-row').forEach(row => {
+      const matches = !q || String(row.dataset.search || '').includes(q);
+      const absent = row.dataset.absent === 'true';
+      const show = matches && (showAbsent || !absent);
+      row.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    listEl.querySelectorAll('.debloat-category').forEach(cat => {
+      const any = Array.from(cat.querySelectorAll('.debloat-row'))
+        .some(row => row.style.display !== 'none');
+      cat.style.display = any ? '' : 'none';
+    });
+    const absentCount = Array.from(listEl.querySelectorAll('.debloat-row'))
+      .filter(row => row.dataset.absent === 'true').length;
+    const showAbsentBtn = document.getElementById('debloat-show-absent');
+    if (showAbsentBtn) {
+      showAbsentBtn.style.display = absentCount ? '' : 'none';
+      showAbsentBtn.textContent = showAbsent ? 'HIDE NOT INSTALLED' : `SHOW NOT INSTALLED (${absentCount})`;
+    }
+    const countEl = document.getElementById('debloat-count');
+    if (countEl) countEl.textContent = `${visible} SHOWN`;
+  }
+
+  function renderRows(apps) {
+    const categories = [];
+    for (const app of apps) {
+      if (!categories.includes(app.category)) categories.push(app.category);
+    }
+
+    let html = '';
+    for (const category of categories) {
+      const rows = apps.filter(app => app.category === category);
+      html += `<div class="debloat-category"><div class="app-category-title">${debloatEsc(category)} <span class="tweak-count">${rows.filter(app => app.canRemove).length} REMOVABLE</span></div>`;
+      for (const app of rows) {
+        const absent = !app.installed && !app.provisioned;
+        const bits = [];
+        if (app.installed) bits.push(`INSTALLED ${app.installed}`);
+        if (app.provisioned) bits.push(`PROVISIONED ${app.provisioned}`);
+        if (absent) bits.push('NOT INSTALLED');
+        if (app.protectedCount) bits.push(`${app.protectedCount} PROTECTED`);
+        const disabled = !app.canRemove;
+        const badge = (!app.canRemove && app.installed)
+          ? '<span class="debloat-badge protected">PROTECTED</span>'
+          : (app.provisioned && !app.installed ? '<span class="debloat-badge">PROVISIONED ONLY</span>' : '');
+        const search = `${app.name} ${app.category} ${app.description} ${(app.packageNames || []).join(' ')}`.toLowerCase();
+        const title = `PACKAGE: ${(app.packageNames || []).join(', ')}`;
+        html += `
+          <label class="debloat-row${disabled ? ' disabled' : ''}" data-id="${debloatEsc(app.id)}" data-search="${debloatEsc(search)}" data-absent="${absent}" title="${debloatEsc(title)}">
+            <input type="checkbox" class="debloat-check" data-id="${debloatEsc(app.id)}" ${disabled ? 'disabled' : ''}>
+            <div class="debloat-info">
+              <div class="debloat-name">${debloatEsc(app.name)}${badge}</div>
+              <div class="debloat-desc">${debloatEsc(app.description)}</div>
+              <div class="debloat-meta">${debloatEsc(bits.join(' | '))}</div>
+              <div class="debloat-pkg">${debloatEsc((app.packageNames || []).join(' | '))}</div>
+            </div>
+          </label>`;
+      }
+      html += '</div>';
+    }
+
+    listEl.innerHTML = html || '<div class="applist-status">NO CATALOGED WINDOWS APPS WERE FOUND ON THIS PC.</div>';
+    applyVisibility();
+    updateSelectionUI();
+  }
+
+  async function refreshDebloat(message, force = false) {
+    const seq = ++scanSeq;
+    statusEl.className = 'debloat-status running';
+    statusEl.textContent = message || 'SCANNING INSTALLED WINDOWS APPS...';
+    listEl.innerHTML = '<div class="applist-status">SCANNING INSTALLED WINDOWS APPS...</div>';
+    updateSelectionUI();
+
+    try {
+      const res = await ipcRenderer.invoke('debloat-scan', { force });
+      if (token !== debloatPageToken || seq !== scanSeq) return;
+      if (!res || !res.ok) throw new Error((res && res.error) || 'scan failed');
+      const apps = Array.isArray(res.apps) ? res.apps : [];
+      const removable = apps.filter(app => app.canRemove).length;
+      const countEl = document.getElementById('debloat-count');
+      if (countEl) countEl.textContent = `${removable} REMOVABLE / ${apps.length} CATALOG`;
+      renderRows(apps);
+      const scopeNote = res.scope === 'all-users' ? '' : ' [SCAN LIMITED TO CURRENT USER]';
+      const provisionedNote = res.provisionedError
+        ? ' [PROVISIONED PACKAGE SCAN FAILED: ' + String(res.provisionedError).substring(0, 160) + ']'
+        : '';
+      statusEl.className = res.admin === false ? 'debloat-status fail' : 'debloat-status ok';
+      statusEl.textContent = res.admin === false
+        ? 'ADMINISTRATOR TOKEN NOT DETECTED - RESTART THE APP AS ADMINISTRATOR BEFORE REMOVING APPS.'
+        : `SCAN COMPLETE - ${removable} app group(s) can be removed on this PC. Removal applies to all users.${scopeNote}${provisionedNote}`;
+    } catch (e) {
+      if (token !== debloatPageToken || seq !== scanSeq) return;
+      listEl.innerHTML = `<div class="applist-status">SCAN FAILED: ${debloatEsc(String(e.message || e).substring(0, 240))}</div>`;
+      statusEl.className = 'debloat-status fail';
+      statusEl.textContent = 'SCAN FAILED - ' + String(e.message || e).substring(0, 240);
+      updateSelectionUI();
+    }
+  }
+
+  document.getElementById('debloat-select-all').addEventListener('click', () => {
+    listEl.querySelectorAll('.debloat-row').forEach(row => {
+      if (row.style.display === 'none') return;
+      const cb = row.querySelector('.debloat-check');
+      if (cb && !cb.disabled) cb.checked = true;
+    });
+    updateSelectionUI();
+  });
+
+  document.getElementById('debloat-clear').addEventListener('click', () => {
+    listEl.querySelectorAll('.debloat-check').forEach(cb => { cb.checked = false; });
+    updateSelectionUI();
+  });
+
+  document.getElementById('debloat-show-absent').addEventListener('click', () => {
+    showAbsent = !showAbsent;
+    applyVisibility();
+    updateSelectionUI();
+  });
+
+  document.getElementById('debloat-refresh').addEventListener('click', () => {
+    refreshDebloat('REFRESHING INSTALLED WINDOWS APPS...', true);
+  });
+
+  filterEl.addEventListener('input', applyVisibility);
+  listEl.addEventListener('change', (e) => {
+    if (e.target && e.target.classList.contains('debloat-check')) updateSelectionUI();
+  });
+
+  removeBtn.addEventListener('click', async () => {
+    if (removing) return;
+    const ids = Array.from(listEl.querySelectorAll('.debloat-check:checked:not(:disabled)'))
+      .map(cb => cb.dataset.id);
+    if (!ids.length) return;
+    const label = ids.length === 1 ? 'app group' : 'app groups';
+    if (!window.confirm(`Remove ${ids.length} selected ${label} for ALL users?\n\nProvisioned copies will also be removed. This cannot be undone from AtomToolBox.`)) return;
+
+    removing = true;
+    updateSelectionUI();
+    statusEl.className = 'debloat-status running';
+    statusEl.textContent = 'REMOVING SELECTED APPS... THIS CAN TAKE SEVERAL MINUTES. DO NOT CLOSE THE APP.';
+
+    try {
+      const res = await ipcRenderer.invoke('debloat-remove', { ids });
+      if (token !== debloatPageToken) return;
+      if (!res || !res.ok) throw new Error((res && res.error) || 'removal failed');
+      const results = Array.isArray(res.results) ? res.results : [];
+      if (!results.length) throw new Error('the removal helper returned no per-app results');
+      const bad = results.filter(r => !r.ok);
+      const good = results.length - bad.length;
+      const warnings = results.flatMap(r => Array.isArray(r.warnings) ? r.warnings : []).filter(Boolean);
+      const detail = bad.slice(0, 3).map(r => `${r.name}: ${(r.errors && r.errors[0]) || 'failed'}`).join(' | ');
+      const notes = [];
+      if (warnings.length) notes.push('Warnings: ' + warnings.slice(0, 2).join(' | '));
+      if (res.verificationError) notes.push('Verification: ' + String(res.verificationError).substring(0, 180));
+      if (res.helperError) notes.push('Helper: ' + String(res.helperError).substring(0, 180));
+      if (res.verificationLimited) notes.push('All-user verification was unavailable.');
+      const noteText = notes.length ? ' ' + notes.join(' ') : '';
+      const finalClass = bad.length ? 'debloat-status fail' : 'debloat-status ok';
+      const finalText = bad.length
+        ? `FINISHED WITH ISSUES - ${good} clean, ${bad.length} with errors. ${detail}${noteText}`
+        : `REMOVAL COMPLETE${res.partial ? ' (VERIFIED BY RESCAN)' : ''} - ${good} ${good === 1 ? 'app group' : 'app groups'} removed for all users.${noteText}`;
+      showToast(bad.length ? 'DEBLOAT FINISHED WITH ISSUES' : 'DEBLOAT COMPLETE', `${good} clean / ${bad.length} issues`);
+      removing = false;
+      await refreshDebloat(bad.length ? 'RESCANNING AFTER REMOVAL...' : 'RESCAN AFTER REMOVAL...', true);
+      if (token === debloatPageToken) {
+        statusEl.className = finalClass;
+        statusEl.textContent = finalText;
+        updateSelectionUI();
+      }
+    } catch (e) {
+      if (token !== debloatPageToken) return;
+      const errText = String(e.message || e).substring(0, 260);
+      statusEl.className = 'debloat-status fail';
+      statusEl.textContent = 'REMOVAL FAILED - ' + errText;
+      showToast('REMOVAL FAILED', errText.substring(0, 140));
+      // Even a rejected IPC call may have removed some packages before the
+      // helper stopped. Re-scan so the page reflects the real machine state.
+      try { await refreshDebloat('RESCANNING AFTER REMOVAL FAILURE...', true); } catch {}
+      if (token === debloatPageToken) {
+        statusEl.className = 'debloat-status fail';
+        statusEl.textContent = 'REMOVAL FAILED - ' + errText;
+      }
+    } finally {
+      removing = false;
+      updateSelectionUI();
+    }
+  });
+
+  await refreshDebloat();
+}
+
 function renderSettings() {
   let activeCount = 0;
   Object.keys(state.tweakStates).forEach(c => {
@@ -1810,7 +2059,7 @@ function renderSettings() {
         <div class="settings-row">
           <div class="settings-row-info">
             <div class="settings-row-name">APP VERSION</div>
-            <div class="settings-row-desc">Atom ToolBox v0.2.0</div>
+            <div class="settings-row-desc">Atom ToolBox v0.3.0</div>
           </div>
         </div>
       </div>

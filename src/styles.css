@@ -348,6 +348,80 @@ body { overflow: hidden; height: 100vh; }
 .applist-del-btn:hover { color: var(--text); background: var(--border); }
 .applist-del-btn.installing { color: var(--text-muted); pointer-events: none; opacity: 0.5; }
 
+/* Windows App Debloat */
+.debloat-notice {
+  border: 1px solid var(--border); background: var(--panel);
+  color: var(--text-dim); padding: 9px 12px; margin-bottom: 12px;
+  font-size: 10px; line-height: 1.55; letter-spacing: 0.35px;
+}
+.debloat-toolbar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 10px 12px; margin-bottom: 10px;
+  border: 1px solid var(--border); background: var(--panel);
+}
+.debloat-summary {
+  font-family: 'Consolas', monospace; font-size: 10px;
+  letter-spacing: 0.8px; color: var(--text-dim); min-width: 100px;
+}
+.debloat-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-left: auto; }
+.debloat-actions .settings-btn { margin-left: 0; }
+.debloat-remove-btn {
+  background: none; border: 1px solid var(--text-dim);
+  color: var(--text); padding: 5px 16px; flex-shrink: 0;
+  font-family: inherit; font-size: 10px; letter-spacing: 0.8px;
+  cursor: pointer; transition: all 0.1s; min-width: 150px; text-align: center;
+}
+.debloat-remove-btn:hover:not(:disabled) { background: var(--border); border-color: var(--text); }
+.debloat-remove-btn:disabled { color: var(--text-muted); border-color: var(--border); opacity: 0.5; cursor: not-allowed; }
+.debloat-category { margin-bottom: 22px; }
+.debloat-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 11px 14px; border: 1px solid var(--border);
+  margin-bottom: 3px; background: var(--panel); cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+  content-visibility: auto; contain-intrinsic-size: auto 74px;
+}
+.debloat-row:hover { border-color: var(--text-dim); background: var(--hover-bg); }
+.debloat-row.disabled { opacity: 0.5; cursor: not-allowed; }
+.debloat-row.disabled:hover { border-color: var(--border); background: var(--panel); }
+.debloat-check {
+  width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0;
+  accent-color: var(--text); cursor: pointer;
+}
+.debloat-check:disabled { cursor: not-allowed; }
+.debloat-info { flex: 1; min-width: 0; }
+.debloat-name {
+  font-size: 12px; color: var(--text); letter-spacing: 0.35px;
+  font-weight: 600; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.debloat-desc { font-size: 10px; color: var(--text-dim); margin-top: 4px; line-height: 1.45; }
+.debloat-meta {
+  font-family: 'Consolas', monospace; font-size: 9px; color: var(--text-muted);
+  margin-top: 5px; letter-spacing: 0.55px;
+}
+.debloat-pkg {
+  font-family: 'Consolas', monospace; font-size: 9px; color: var(--text-faint);
+  margin-top: 2px; letter-spacing: 0.3px; overflow-wrap: anywhere;
+}
+.debloat-badge {
+  font-size: 8px; font-weight: 600; letter-spacing: 0.9px;
+  color: var(--text-dim); border: 1px solid var(--border);
+  padding: 1px 6px; white-space: nowrap;
+}
+.debloat-badge.protected { color: var(--text-muted); border-color: var(--text-faint); }
+.debloat-status {
+  margin-top: 14px; border: 1px solid var(--border); background: var(--panel);
+  padding: 9px 12px; font-family: 'Consolas', monospace;
+  font-size: 10px; color: var(--text-dim); line-height: 1.5;
+  white-space: pre-wrap; word-break: break-word;
+}
+.debloat-status.ok { border-color: #2e5a2e; color: #6fbf6f; }
+.debloat-status.fail { border-color: #5a2e2e; color: #d07070; }
+.debloat-status.running { color: #c9a84a; }
+[data-theme="light"] .debloat-status.ok { border-color: #9bcf9b; color: #1d6b1d; }
+[data-theme="light"] .debloat-status.fail { border-color: #d8a0a0; color: #a02020; }
+[data-theme="light"] .debloat-status.running { color: #8a6a00; }
+
 .admin-warn {
   border: 1px solid #554400; background: #1a1600;
   color: #aa8800; padding: 8px 14px; margin-bottom: 12px;

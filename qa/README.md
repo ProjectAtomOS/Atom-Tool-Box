@@ -1,6 +1,6 @@
 # QA harnesses
 
-These scripts drive the installed AtomToolBox 0.2.0 build over the Chrome DevTools Protocol. They are development tools, not part of the packaged application.
+These scripts drive the AtomToolBox 0.3.0 build over the Chrome DevTools Protocol. They are development tools, not part of the packaged application.
 
 ## Requirements
 
@@ -20,6 +20,7 @@ node qa/smoke-live.js
 | Script | Purpose |
 |---|---|
 | `smoke-live.js` | Navigation, page rendering and core UI smoke test |
+| `debloat-live.js` | Debloat catalog, selection, filter and safe removal-IPC probe (never removes an installed app) |
 | `installed-smoke.js` | Smoke test against the installed build |
 | `optimizer-live.js` | PRO locks, popup, backend gate and search behaviour |
 | `personalize-live.js` | Accent presets and registry personalization |

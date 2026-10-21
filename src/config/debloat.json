@@ -1,0 +1,266 @@
+[
+  {
+    "id": "bing_weather",
+    "name": "MSN Weather",
+    "category": "NEWS & WEATHER",
+    "names": ["Microsoft.BingWeather"],
+    "description": "Microsoft's preinstalled weather app. The weather widget and web version remain available."
+  },
+  {
+    "id": "bing_news",
+    "name": "MSN News",
+    "category": "NEWS & WEATHER",
+    "names": ["Microsoft.BingNews"],
+    "description": "Microsoft's preinstalled news feed app."
+  },
+  {
+    "id": "bing_finance",
+    "name": "MSN Money",
+    "category": "NEWS & WEATHER",
+    "names": ["Microsoft.BingFinance"],
+    "description": "Microsoft's preinstalled finance and markets app."
+  },
+  {
+    "id": "bing_sports",
+    "name": "MSN Sports",
+    "category": "NEWS & WEATHER",
+    "names": ["Microsoft.BingSports"],
+    "description": "Microsoft's preinstalled sports scores and news app."
+  },
+  {
+    "id": "get_help",
+    "name": "Get Help",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.GetHelp"],
+    "description": "Support app used to contact Microsoft or run troubleshooters. Web support is still available."
+  },
+  {
+    "id": "tips",
+    "name": "Tips",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.Getstarted"],
+    "description": "Windows tips and promotional suggestions app."
+  },
+  {
+    "id": "feedback_hub",
+    "name": "Feedback Hub",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.WindowsFeedbackHub"],
+    "description": "Sends feedback and diagnostics to Microsoft."
+  },
+  {
+    "id": "office_hub",
+    "name": "Office Hub",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.MicrosoftOfficeHub"],
+    "description": "Promotional hub for Microsoft 365. Installed Office desktop apps are not affected."
+  },
+  {
+    "id": "onenote_uwp",
+    "name": "OneNote for Windows 10",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.Office.OneNote"],
+    "description": "Legacy store version of OneNote. The Microsoft 365 desktop version is not affected."
+  },
+  {
+    "id": "solitaire",
+    "name": "Microsoft Solitaire Collection",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.MicrosoftSolitaireCollection"],
+    "description": "Preinstalled card games with advertising and Microsoft account prompts."
+  },
+  {
+    "id": "skype",
+    "name": "Skype",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.SkypeApp"],
+    "description": "Legacy Skype app. Skype for web and the standalone installer remain available."
+  },
+  {
+    "id": "mixed_reality",
+    "name": "Mixed Reality Portal",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.MixedReality.Portal"],
+    "description": "Portal for Windows Mixed Reality headsets. Safe to remove if you do not use a headset."
+  },
+  {
+    "id": "print_3d",
+    "name": "3D Viewer",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.Print3D"],
+    "description": "Preinstalled 3D model viewer and print helper."
+  },
+  {
+    "id": "3d_builder",
+    "name": "3D Builder",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.3DBuilder"],
+    "description": "Legacy preinstalled 3D modelling app."
+  },
+  {
+    "id": "oneconnect",
+    "name": "Paid Wi-Fi & Cellular",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.OneConnect"],
+    "description": "Legacy paid Wi-Fi and cellular data marketplace."
+  },
+  {
+    "id": "people",
+    "name": "People",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.People"],
+    "description": "Legacy People app. Contacts remain available in Mail, Outlook and Windows settings."
+  },
+  {
+    "id": "mail_calendar",
+    "name": "Mail and Calendar",
+    "category": "MICROSOFT APPS",
+    "names": ["microsoft.windowscommunicationsapps"],
+    "description": "Legacy Mail and Calendar apps. Outlook desktop and Outlook on the web are not affected."
+  },
+  {
+    "id": "xbox",
+    "name": "Xbox app and game overlays",
+    "category": "XBOX & GAMING",
+    "names": [
+      "Microsoft.XboxApp",
+      "Microsoft.XboxGamingOverlay",
+      "Microsoft.XboxGameOverlay",
+      "Microsoft.XboxSpeechToTextOverlay"
+    ],
+    "description": "Xbox app and Game Bar overlay components. Xbox identity and framework dependencies are left in place."
+  },
+  {
+    "id": "zune_video",
+    "name": "Movies & TV",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.ZuneVideo"],
+    "description": "Microsoft's video player. Other video players are not affected."
+  },
+  {
+    "id": "zune_music",
+    "name": "Media Player (Groove legacy)",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.ZuneMusic"],
+    "description": "Legacy Groove Media Player package. Other media players are not affected."
+  },
+  {
+    "id": "windows_maps",
+    "name": "Windows Maps",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.WindowsMaps"],
+    "description": "Offline maps and navigation app. Maps on the web are still available."
+  },
+  {
+    "id": "power_automate",
+    "name": "Power Automate",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.PowerAutomateDesktop"],
+    "description": "Desktop flow automation app. The web service is not affected."
+  },
+  {
+    "id": "copilot",
+    "name": "Windows Copilot",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.Copilot"],
+    "description": "Copilot app package on Windows 11. If Windows marks it as protected, it will be skipped."
+  },
+  {
+    "id": "dev_home",
+    "name": "Dev Home",
+    "category": "MICROSOFT APPS",
+    "names": ["Microsoft.Windows.DevHome"],
+    "description": "Developer dashboard app that ships with some Windows 11 builds."
+  },
+  {
+    "id": "teams_consumer",
+    "name": "Microsoft Teams (consumer)",
+    "category": "MICROSOFT APPS",
+    "names": ["MicrosoftTeams"],
+    "description": "Consumer Teams package used by the Chat icon on some Windows 11 builds."
+  },
+  {
+    "id": "teams_new",
+    "name": "Microsoft Teams (new)",
+    "category": "MICROSOFT APPS",
+    "names": ["MSTeams"],
+    "description": "New Teams client. Remove only if you use Teams on the web or another work account."
+  },
+  {
+    "id": "clipchamp",
+    "name": "Clipchamp",
+    "category": "THIRD-PARTY & PROMOTED",
+    "names": ["Clipchamp.Clipchamp"],
+    "description": "Microsoft's preinstalled video editor. The web version remains available."
+  },
+  {
+    "id": "spotify",
+    "name": "Spotify",
+    "category": "THIRD-PARTY & PROMOTED",
+    "names": ["SpotifyAB.SpotifyMusic"],
+    "description": "Promoted Spotify store app."
+  },
+  {
+    "id": "disney_plus",
+    "name": "Disney+",
+    "category": "THIRD-PARTY & PROMOTED",
+    "names": ["Disney.37853FC22B2CE"],
+    "description": "Promoted Disney+ store app."
+  },
+  {
+    "id": "netflix",
+    "name": "Netflix",
+    "category": "THIRD-PARTY & PROMOTED",
+    "names": ["4DF9E0F8.Netflix"],
+    "description": "Promoted Netflix store app."
+  },
+  {
+    "id": "prime_video",
+    "name": "Prime Video",
+    "category": "THIRD-PARTY & PROMOTED",
+    "names": ["AmazonVideo.PrimeVideo"],
+    "description": "Promoted Amazon Prime Video store app."
+  },
+  {
+    "id": "facebook",
+    "name": "Facebook",
+    "category": "THIRD-PARTY & PROMOTED",
+    "names": ["Facebook.Facebook"],
+    "description": "Promoted Facebook store app."
+  },
+  {
+    "id": "twitter",
+    "name": "X (Twitter)",
+    "category": "THIRD-PARTY & PROMOTED",
+    "names": ["9E2F88E3.Twitter"],
+    "description": "Legacy promoted Twitter store app."
+  },
+  {
+    "id": "tiktok",
+    "name": "TikTok",
+    "category": "THIRD-PARTY & PROMOTED",
+    "names": ["Bytedance.TikTok"],
+    "description": "Promoted TikTok store app."
+  },
+  {
+    "id": "candy_crush_saga",
+    "name": "Candy Crush Saga",
+    "category": "GAMES & PROMOTED",
+    "names": ["king.com.CandyCrushSaga"],
+    "description": "Promoted King game that is preinstalled on many Windows 10 and 11 devices."
+  },
+  {
+    "id": "candy_crush_soda",
+    "name": "Candy Crush Soda Saga",
+    "category": "GAMES & PROMOTED",
+    "names": ["king.com.CandyCrushSodaSaga"],
+    "description": "Promoted King game that is preinstalled on many Windows 10 and 11 devices."
+  },
+  {
+    "id": "bubble_witch",
+    "name": "Bubble Witch 3 Saga",
+    "category": "GAMES & PROMOTED",
+    "names": ["king.com.BubbleWitch3Saga"],
+    "description": "Promoted King game that is preinstalled on some Windows devices."
+  }
+]

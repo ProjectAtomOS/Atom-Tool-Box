@@ -1,6 +1,6 @@
 {
   "name": "atom-toolbox",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "A Windows 10/11 tweak and system utility toolbox built with Electron.",
   "license": "MIT",
@@ -47,7 +47,8 @@
           ]
         }
       ],
-      "icon": "assets/icons/app.png"
+      "icon": "assets/icons/app.png",
+      "requestedExecutionLevel": "requireAdministrator"
     },
     "nsis": {
       "oneClick": false,
